@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { FC, useState } from "react";
 
+import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import {
   View,
   ScrollView,
@@ -25,10 +26,12 @@ const LoginScreen: FC = () => {
   const handleSubmit = () => {
     console.log("Username:", username);
     console.log("Password:", password);
+    navigation.navigate("Home");
   };
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="never">
+      <ExpoStatusBar style="light" />
       <View className="min-h-screen bg-white" style={styles.container}>
         <View className="border-y-4 border-b-black">
           <Image
