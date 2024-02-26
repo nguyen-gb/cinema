@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
+import { ChevronRightIcon } from "react-native-heroicons/outline";
 
 const { width, height } = Dimensions.get("window");
 
@@ -24,8 +25,9 @@ export default function MovieList(props: Props) {
     <View className="mb-8 space-y-4">
       <View className="mx-4 flex-row justify-between items-center">
         <Text className="text-black text-xl font-semibold">{title}</Text>
-        <TouchableOpacity>
-          <Text className="text-lg font-normal text-[#6F767E]">View all</Text>
+        <TouchableOpacity className="flex flex-row items-center ">
+          <Text className="text-lg font-normal text-[#6F767E]">View All</Text>
+          <ChevronRightIcon size="18" strokeWidth={2} color="#6F767E" />
         </TouchableOpacity>
       </View>
       <ScrollView
@@ -48,7 +50,17 @@ export default function MovieList(props: Props) {
                   }}
                   className="rounded-xl"
                 />
-                <Text>Movie Name</Text>
+                <Text className="text-sm font-medium">
+                  {"Movie Name".length > 14
+                    ? "Movie Name".slice(0, 14) + "..."
+                    : "Movie Name"}
+                </Text>
+                <Text className="text-xs font-normal">
+                  {"Family, Comedy, Adventure, Mythology".length > 14
+                    ? "Family, Comedy, Adventure, Mythology".slice(0, 14) +
+                      "..."
+                    : "Family, Comedy, Adventure, Mythology"}
+                </Text>
               </View>
             </TouchableWithoutFeedback>
           );

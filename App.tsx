@@ -11,6 +11,7 @@ import ConfirmRegisterScreen from "screens/ConfirmRegister";
 import ConfirmForgotPasswordScreen from "screens/ConfirmForgotPassword";
 import CreateNewPasswordScreen from "screens/CreateNewPassword";
 import HomeScreen from "screens/Home";
+import MovieScreen from "screens/Movie";
 
 function App(): JSX.Element {
   const Stack = createNativeStackNavigator();
@@ -37,6 +38,7 @@ function App(): JSX.Element {
           component={CreateNewPasswordScreen}
         />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Movie" component={MovieScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

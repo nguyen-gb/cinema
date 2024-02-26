@@ -14,7 +14,7 @@ interface Props {
 export default function TrendingMovies(props: Props) {
   const navigation = useNavigation();
 
-  const handleClick = () => {
+  const handleClick = (item: any) => {
     navigation.navigate("Movie", item);
   };
   return (
@@ -25,7 +25,7 @@ export default function TrendingMovies(props: Props) {
       <Carousel
         data={props.data}
         renderItem={({ item }) => (
-          <MovieCard item={item} handleClick={handleClick} />
+          <MovieCard item={item} handleClick={() => handleClick(item)} />
         )}
         firstItem={1}
         inactiveSlideOpacity={0.6}

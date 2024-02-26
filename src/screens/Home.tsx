@@ -19,6 +19,7 @@ import MovieList from "components/MovieList";
 const ios = Platform.OS == "ios";
 const HomeScreen: FC = () => {
   const [trending, setTrending] = useState([1, 2, 3]);
+  const [showing, setShowing] = useState([1, 2, 3]);
   const [upcoming, setUpcoming] = useState([1, 2, 3]);
 
   return (
@@ -38,6 +39,7 @@ const HomeScreen: FC = () => {
         contentContainerStyle={{ paddingBottom: 10 }}
       >
         <TrendingMovies data={trending} />
+        <MovieList title="Showing" data={showing} />
         <MovieList title="Upcoming" data={upcoming} />
       </ScrollView>
     </View>
