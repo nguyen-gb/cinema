@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { FC, useState } from "react";
+import React, { FC, useContext, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import {
@@ -13,20 +14,64 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
+import Toast from "react-native-toast-message";
+import authApi from "apis/auth.api";
+import { isAxiosUnprocessableEntityError } from "utils/utils";
+import { ErrorResponse } from "types/utils.type";
+import { AppContext } from "contexts/app.context";
 
 const dimensions = Dimensions.get("window");
 const statusBarHeight = StatusBar?.currentHeight ?? 0;
 const screen = dimensions.height + statusBarHeight + 15;
 
 const LoginScreen: FC = () => {
+  const { setIsAuthenticated, setProfile } = useContext(AppContext);
   const navigation = useNavigation<any>();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const loginMutation = useMutation({
+    mutationFn: (body: { email: string; password: string }) =>
+      authApi.login(body),
+  });
+
   const handleSubmit = () => {
-    console.log("Username:", username);
-    console.log("Password:", password);
-    navigation.navigate("Home");
+    if (!username) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter your email to log in!",
+      });
+      return;
+    }
+    if (!password) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter your password to log in!",
+      });
+      return;
+    }
+
+    const body = {
+      email: username,
+      password: password,
+    };
+
+    loginMutation.mutate(body, {
+      onSuccess: (data) => {
+        setIsAuthenticated(true);
+        setProfile(data.data.data.user);
+        navigation.navigate("Home");
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
+          const message = error.response?.data.message;
+          Toast.show({
+            type: "error",
+            text1: message,
+          });
+        }
+      },
+    });
   };
 
   return (

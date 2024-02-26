@@ -1,13 +1,13 @@
-import { Combo } from 'src/types/combo.type'
-import { SuccessResponse } from 'src/types/utils.type'
-import http from 'src/utils/http'
+import { Combo } from "../types/combo.type";
+import { SuccessResponse } from "../types/utils.type";
+import http from "../utils/http";
 
-const URL = 'unauth/product'
+const URL = "unauth/product";
 
 const comboApi = {
   getCombos() {
-    return http.get<SuccessResponse<Combo[]>>(`${URL}`)
-  }
-}
+    return http.get<SuccessResponse<Combo[]>>(`${URL}`);
+  },
+};
 
-export default comboApi
+export default comboApi;

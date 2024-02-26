@@ -1,13 +1,13 @@
-import { Cinema } from 'src/types/cinema.type'
-import { SuccessResponse } from 'src/types/utils.type'
-import http from 'src/utils/http'
+import { Cinema } from "../types/cinema.type";
+import { SuccessResponse } from "../types/utils.type";
+import http from "../utils/http";
 
-const URL = 'unauth/theater'
+const URL = "unauth/theater";
 
 const cinemaApi = {
   getCinemas() {
-    return http.get<SuccessResponse<Cinema[]>>(URL)
-  }
-}
+    return http.get<SuccessResponse<Cinema[]>>(URL);
+  },
+};
 
-export default cinemaApi
+export default cinemaApi;

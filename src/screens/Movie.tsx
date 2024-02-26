@@ -19,7 +19,7 @@ const topMargin = ios ? "" : "mt-3";
 
 export default function MovieScreen() {
   const { params: item } = useRoute();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [showFullText, setShowFullText] = useState(false);
 
   return (

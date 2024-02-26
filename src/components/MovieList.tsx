@@ -20,7 +20,7 @@ interface Props {
 
 export default function MovieList(props: Props) {
   const { title, data } = props;
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   return (
     <View className="mb-8 space-y-4">
       <View className="mx-4 flex-row justify-between items-center">

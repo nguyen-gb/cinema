@@ -32,9 +32,6 @@ export const clearLS = async () => {
   }
 };
 
-// eventEmitter.addListener("clearLS", () => {
-// });
-
 export const getAccessTokenFromLS = async () => {
   try {
     const accessToken = (await AsyncStorage.getItem("access_token")) || "";

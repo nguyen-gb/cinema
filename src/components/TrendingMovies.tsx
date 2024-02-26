@@ -30,7 +30,7 @@ export default function TrendingMovies(props: Props) {
         firstItem={1}
         inactiveSlideOpacity={0.6}
         sliderWidth={width}
-        itemWidth={width * 0.82}
+        itemWidth={width * 0.72}
         slideStyle={{ display: "flex", alignItems: "center" }}
       />
     </View>

@@ -1,16 +1,16 @@
-import { Booking, BookingDetail } from './../types/booking.type'
-import { SuccessResponse } from 'src/types/utils.type'
-import http from 'src/utils/http'
+import { Booking, BookingDetail } from "./../types/booking.type";
+import { SuccessResponse } from "../types/utils.type";
+import http from "../utils/http";
 
-const URL = 'auth/booking'
+const URL = "auth/booking";
 
 const bookingApi = {
   createBooking(body: Booking) {
-    return http.post<SuccessResponse<BookingDetail>>(URL, body)
+    return http.post<SuccessResponse<BookingDetail>>(URL, body);
   },
   getBookingDetail(id: string) {
-    return http.get<SuccessResponse<BookingDetail>>(`${URL}/${id}`)
-  }
-}
+    return http.get<SuccessResponse<BookingDetail>>(`${URL}/${id}`);
+  },
+};
 
-export default bookingApi
+export default bookingApi;
