@@ -9,13 +9,17 @@ import { AppContext, AppProvider } from "contexts/app.context";
 import SplashScreen from "screens/Splash";
 import LoginScreen from "screens/Login";
 import RegisterScreen from "screens/Register";
-import ForgotPasswordScreen from "screens/ForgotPassword";
 import ConfirmRegisterScreen from "screens/ConfirmRegister";
-import ConfirmForgotPasswordScreen from "screens/ConfirmForgotPassword";
+import ForgotPasswordScreen from "screens/ForgotPassword";
 import CreateNewPasswordScreen from "screens/CreateNewPassword";
 import HomeScreen from "screens/Home";
 import MovieScreen from "screens/Movie";
-import Toast from "react-native-toast-message";
+import Toast, {
+  BaseToastProps,
+  ErrorToast,
+  InfoToast,
+  SuccessToast,
+} from "react-native-toast-message";
 import { eventEmitter } from "utils/auth";
 
 const queryClient = new QueryClient({
@@ -30,6 +34,18 @@ const queryClient = new QueryClient({
 function App(): JSX.Element {
   const { reset } = useContext(AppContext);
   const Stack = createNativeStackNavigator();
+
+  const toastConfig = {
+    success: (props: BaseToastProps) => (
+      <SuccessToast {...props} text1NumberOfLines={2} />
+    ),
+    error: (props: BaseToastProps) => (
+      <ErrorToast {...props} text1NumberOfLines={2} />
+    ),
+    info: (props: BaseToastProps) => (
+      <InfoToast {...props} text1NumberOfLines={2} />
+    ),
+  };
 
   useEffect(() => {
     eventEmitter.addListener("clearLS", reset);
@@ -51,16 +67,12 @@ function App(): JSX.Element {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
             <Stack.Screen
-              name="ForgotPassword"
-              component={ForgotPasswordScreen}
-            />
-            <Stack.Screen
               name="ConfirmRegister"
               component={ConfirmRegisterScreen}
             />
             <Stack.Screen
-              name="ConfirmForgotPassword"
-              component={ConfirmForgotPasswordScreen}
+              name="ForgotPassword"
+              component={ForgotPasswordScreen}
             />
             <Stack.Screen
               name="CreateNewPassword"
@@ -69,7 +81,7 @@ function App(): JSX.Element {
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Movie" component={MovieScreen} />
           </Stack.Navigator>
-          <Toast />
+          <Toast config={toastConfig} />
         </NavigationContainer>
       </AppProvider>
     </QueryClientProvider>

@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { FC, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import {
@@ -13,6 +14,10 @@ import {
   StyleSheet,
   StatusBar,
 } from "react-native";
+import Toast from "react-native-toast-message";
+import authApi from "apis/auth.api";
+import { isAxiosUnprocessableEntityError } from "utils/utils";
+import { ErrorResponse } from "types/utils.type";
 
 const dimensions = Dimensions.get("window");
 const statusBarHeight = StatusBar?.currentHeight ?? 0;
@@ -20,11 +25,39 @@ const screen = dimensions.height + statusBarHeight + 15;
 
 const ForgotPasswordScreen: FC = () => {
   const navigation = useNavigation<any>();
-  const [gmail, setGmail] = useState("");
+  const forgotPassMutation = useMutation({
+    mutationFn: (body: { email: string }) => authApi.forgotPass(body),
+  });
+  const [email, setEmail] = useState("");
 
   const handleSubmit = () => {
-    console.log("Gmail:", gmail);
-    navigation.navigate("ConfirmForgotPassword");
+    if (!email) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter your email to continue!",
+      });
+      return;
+    }
+
+    const body = {
+      email: email,
+    };
+    forgotPassMutation.mutate(body, {
+      onSuccess: (res) => {
+        navigation.navigate("CreateNewPassword", {
+          userId: res.data.data._id,
+        });
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
+          const message = error.response?.data.message;
+          Toast.show({
+            type: "error",
+            text1: message,
+          });
+        }
+      },
+    });
   };
 
   return (
@@ -44,8 +77,8 @@ const ForgotPasswordScreen: FC = () => {
           <TextInput
             className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[12px]"
             placeholder="Email"
-            onChangeText={(text) => setGmail(text)}
-            value={gmail}
+            onChangeText={(text) => setEmail(text)}
+            value={email}
           />
           <TouchableOpacity
             className="px-[16px] py-[12px] bg-[#AE1F17] rounded-lg mb-[24px]"

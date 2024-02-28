@@ -1,5 +1,6 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { FC, useRef, useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import React, { FC, useContext, useRef, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import {
@@ -13,13 +14,24 @@ import {
   StyleSheet,
   StatusBar,
 } from "react-native";
+import authApi from "apis/auth.api";
+import { AppContext } from "contexts/app.context";
+import { isAxiosUnprocessableEntityError } from "utils/utils";
+import { ErrorResponse } from "types/utils.type";
+import Toast from "react-native-toast-message";
 
 const dimensions = Dimensions.get("window");
 const statusBarHeight = StatusBar?.currentHeight ?? 0;
 const screen = dimensions.height + statusBarHeight + 15;
 
 const ConfirmRegisterScreen: FC = () => {
+  const { params } = useRoute();
   const navigation = useNavigation<any>();
+  const { setIsAuthenticated, setProfile } = useContext(AppContext);
+  const verifyMutation = useMutation({
+    mutationFn: (body: { user_id: string; otp: string }) =>
+      authApi.verify(body),
+  });
   const [otp, setOtp] = useState(["", "", "", ""]);
   const inputs = useRef<TextInput[]>([]);
 
@@ -46,8 +58,31 @@ const ConfirmRegisterScreen: FC = () => {
   };
 
   const handleSubmit = () => {
-    console.log("OTP:", otp);
-    navigation.navigate("Login");
+    if (otp.join("").length < 4) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter your OTP to continue!",
+      });
+      return;
+    }
+
+    const body = { user_id: (params as any).userId, otp: otp.join("") };
+    verifyMutation.mutate(body, {
+      onSuccess: (data) => {
+        setIsAuthenticated(true);
+        setProfile(data.data.data.user);
+        navigation.navigate("Home");
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
+          const message = error.response?.data.message;
+          Toast.show({
+            type: "error",
+            text1: message,
+          });
+        }
+      },
+    });
   };
 
   return (

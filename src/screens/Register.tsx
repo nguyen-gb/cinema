@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { FC, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import {
@@ -13,6 +14,10 @@ import {
   StatusBar,
   StyleSheet,
 } from "react-native";
+import Toast from "react-native-toast-message";
+import authApi from "apis/auth.api";
+import { isAxiosUnprocessableEntityError } from "utils/utils";
+import { ErrorResponse } from "types/utils.type";
 
 const dimensions = Dimensions.get("window");
 const statusBarHeight = StatusBar?.currentHeight ?? 0;
@@ -26,10 +31,80 @@ const RegisterScreen: FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const registerAccountMutation = useMutation({
+    mutationFn: (body: {
+      name: string;
+      email: string;
+      phone: string;
+      password: string;
+      confirm_password: string;
+    }) => authApi.registerAccount(body),
+  });
+
   const handleSubmit = () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
-    navigation.navigate("ConfirmRegister");
+    if (!fullname) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter your full name to continue!",
+      });
+      return;
+    }
+    if (!email) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter your email to continue!",
+      });
+      return;
+    }
+    if (!phone) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter your phone to continue!",
+      });
+      return;
+    }
+    if (!password) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter your password to continue!",
+      });
+      return;
+    }
+    if (!confirmPassword) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter your confirm password to continue!",
+      });
+      return;
+    }
+    if (confirmPassword !== password) {
+      Toast.show({
+        type: "error",
+        text1: "Confirm password doesn't match your password!",
+      });
+      return;
+    }
+    const body = {
+      name: fullname,
+      email: email,
+      phone: phone,
+      password: password,
+      confirm_password: confirmPassword,
+    };
+    registerAccountMutation.mutate(body, {
+      onSuccess: (res) => {
+        navigation.navigate("ConfirmRegister", { userId: res.data.data._id });
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
+          const message = error.response?.data.message;
+          Toast.show({
+            type: "error",
+            text1: message,
+          });
+        }
+      },
+    });
   };
 
   return (

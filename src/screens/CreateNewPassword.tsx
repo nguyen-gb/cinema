@@ -1,5 +1,6 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { FC, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import {
@@ -13,18 +14,81 @@ import {
   StyleSheet,
   StatusBar,
 } from "react-native";
+import Toast from "react-native-toast-message";
+import authApi from "apis/auth.api";
+import { isAxiosUnprocessableEntityError } from "utils/utils";
+import { ErrorResponse } from "types/utils.type";
 
 const dimensions = Dimensions.get("window");
 const statusBarHeight = StatusBar?.currentHeight ?? 0;
 const screen = dimensions.height + statusBarHeight + 15;
 
 const CreateNewPasswordScreen: FC = () => {
+  const { params } = useRoute();
   const navigation = useNavigation<any>();
+  const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const forgotPassMutation = useMutation({
+    mutationFn: (body: {
+      user_id: string;
+      otp: string;
+      password: string;
+      confirm_password: string;
+    }) => authApi.forgotPassConfirm(body),
+  });
 
   const handleSubmit = () => {
-    console.log("Password:", password);
-    navigation.navigate("Login");
+    if (!otp) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter your OTP to continue!",
+      });
+      return;
+    }
+    if (!password) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter your password to continue!",
+      });
+      return;
+    }
+    if (!confirmPassword) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter your confirm password to continue!",
+      });
+      return;
+    }
+    if (confirmPassword !== password) {
+      Toast.show({
+        type: "error",
+        text1: "Confirm password doesn't match your password!",
+      });
+      return;
+    }
+
+    const body = {
+      user_id: (params as any).userId,
+      otp: otp,
+      password: password,
+      confirm_password: confirmPassword,
+    };
+    forgotPassMutation.mutate(body, {
+      onSuccess: () => {
+        navigation.navigate("Login");
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
+          const message = error.response?.data.message;
+          Toast.show({
+            type: "error",
+            text1: message,
+          });
+        }
+      },
+    });
   };
 
   return (
@@ -43,9 +107,23 @@ const CreateNewPasswordScreen: FC = () => {
           </Text>
           <TextInput
             className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[20px]"
+            placeholder="OTP"
+            onChangeText={(text) => setOtp(text)}
+            value={otp}
+            secureTextEntry={true}
+          />
+          <TextInput
+            className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[20px]"
             placeholder="Password"
             onChangeText={(text) => setPassword(text)}
             value={password}
+            secureTextEntry={true}
+          />
+          <TextInput
+            className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[20px]"
+            placeholder="Confirm password"
+            onChangeText={(text) => setConfirmPassword(text)}
+            value={confirmPassword}
             secureTextEntry={true}
           />
           <TouchableOpacity
