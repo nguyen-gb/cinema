@@ -1,4 +1,4 @@
-import { Product } from "../types/product.type";
+import { Product } from "./movie.type";
 
 export type PurchaseStatus = -1 | 1 | 2 | 3 | 4 | 5;
 

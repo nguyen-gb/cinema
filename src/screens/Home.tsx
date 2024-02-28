@@ -1,8 +1,9 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   Bars3CenterLeftIcon,
   MagnifyingGlassIcon,
 } from "react-native-heroicons/outline";
+import { useQuery } from "@tanstack/react-query";
 
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import {
@@ -15,12 +16,37 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrendingMovies from "components/TrendingMovies";
 import MovieList from "components/MovieList";
+import movieApi from "apis/movie.api";
+import { Movie } from "types/movie.type";
 
 const ios = Platform.OS == "ios";
 const HomeScreen: FC = () => {
-  const [trending, setTrending] = useState([1, 2, 3]);
-  const [showing, setShowing] = useState([1, 2, 3]);
-  const [upcoming, setUpcoming] = useState([1, 2, 3]);
+  const [trending, setTrending] = useState<Movie[]>([]);
+  const [showing, setShowing] = useState<Movie[]>([]);
+  const [upcoming, setUpcoming] = useState<Movie[]>([]);
+
+  const { data: dataShowing, isLoading: isLoadingShowing } = useQuery({
+    queryKey: ["showing"],
+    queryFn: () => {
+      return movieApi.getMovies({ status: 1 });
+    },
+    staleTime: 3 * 60 * 1000,
+  });
+
+  const { data: dataUpcoming, isLoading: isLoadingUpcoming } = useQuery({
+    queryKey: ["upcoming"],
+    queryFn: () => {
+      return movieApi.getMovies({ status: 2 });
+    },
+    staleTime: 3 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    setShowing(dataShowing?.data.data as Movie[]);
+  }, [dataShowing]);
+  useEffect(() => {
+    setUpcoming(dataUpcoming?.data.data as Movie[]);
+  }, [dataUpcoming]);
 
   return (
     <View className="flex-1 bg-white">
@@ -38,9 +64,19 @@ const HomeScreen: FC = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 10 }}
       >
-        <TrendingMovies data={trending} />
-        <MovieList title="Showing" data={showing} />
-        <MovieList title="Upcoming" data={upcoming} />
+        <TrendingMovies data={trending} isLoading={true} />
+        <MovieList
+          key="showing"
+          title="Showing"
+          data={showing}
+          isLoading={isLoadingShowing}
+        />
+        <MovieList
+          key="upcoming"
+          title="Upcoming"
+          data={upcoming}
+          isLoading={isLoadingUpcoming}
+        />
       </ScrollView>
     </View>
   );

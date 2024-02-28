@@ -1,11 +1,12 @@
 import React from "react";
 
 import { Dimensions, TouchableWithoutFeedback, Image } from "react-native";
+import { Movie } from "types/movie.type";
 
 const { width, height } = Dimensions.get("window");
 
 interface Props {
-  item: any;
+  item: Movie;
   handleClick: any;
 }
 

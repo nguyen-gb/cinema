@@ -12,15 +12,17 @@ import {
   Platform,
   Image,
 } from "react-native";
+import { Movie } from "types/movie.type";
 
-const { width, height } = Dimensions.get("window");
 const ios = Platform.OS == "ios";
 const topMargin = ios ? "" : "mt-3";
 
 export default function MovieScreen() {
-  const { params: item } = useRoute();
+  const { params } = useRoute();
   const navigation = useNavigation<any>();
   const [showFullText, setShowFullText] = useState(false);
+
+  const movie = (params as any).movie as Movie;
 
   return (
     <ScrollView
@@ -40,33 +42,29 @@ export default function MovieScreen() {
           >
             <ChevronLeftIcon size="28" strokeWidth={2.5} color="black" />
           </TouchableOpacity>
-          <Text className="text-xl font-semibold">Wonka</Text>
+          <Text className="text-xl font-semibold">{movie.name}</Text>
         </SafeAreaView>
       </View>
       <View className="w-full">
-        <Image
-          className="w-full h-[250px]"
-          source={require("../assets/thumbnail_demo.png")}
-        />
+        <Image className="w-full h-[250px]" src={movie.thumbnail} />
         <View className="flex-row mx-4">
           <View className="w-[100px] h-[150px] mt-[-20px]">
             <Image
-              source={require("../assets/movie_demo.png")}
+              src={movie.poster}
               className="w-full h-full object-contain"
             />
           </View>
           <View className="flex-col p-2">
-            <Text className="text-base font-semibold my-1">Wonka</Text>
+            <Text className="text-base font-semibold my-1">{movie.name}</Text>
             <Text
               className="text-xs font-normal my-1 mr-20"
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              Family, Comedy, Adventure, Mythology Family, Comedy, Adventure,
-              Mythology
+              {movie.genres}
             </Text>
             <Text className="text-white text-center text-xs leading-4 bg-[#E89C29] rounded-2xl w-[36px] my-2">
-              13+
+              {movie.age}
             </Text>
           </View>
         </View>
@@ -76,7 +74,7 @@ export default function MovieScreen() {
               Release date
             </Text>
             <Text className="text-sm leading-[22px] font-medium text-[#33383F]">
-              26/01/2024
+              {movie.release}
             </Text>
           </View>
           <View className="h-full w-[0.75px] bg-[#6f767ebf]"></View>
@@ -85,7 +83,7 @@ export default function MovieScreen() {
               Duration
             </Text>
             <Text className="text-sm leading-[22px] font-medium text-[#33383F]">
-              88 min
+              {movie.duration} min
             </Text>
           </View>
           <View className="h-full w-[0.75px] bg-[#6f767ebf]"></View>
@@ -106,14 +104,7 @@ export default function MovieScreen() {
             numberOfLines={showFullText ? undefined : 3}
             ellipsizeMode="tail"
           >
-            Based on the character from the worldwide children's bedside book
-            "Charlie and the Chocolate Factory" and the 2005 movie version of
-            the same name, WONKA tells the magical story of an inventor's
-            journey. , the world's greatest magician and chocolate maker became
-            the adorable WILLY WONKA we know today. From the director of the
-            Paddington series and the producer of the hit Harry Potter
-            adaptation series, WONKA promises to be a fun and colorful movie for
-            audiences this Christmas.
+            {movie.description}
             {showFullText && (
               <Text
                 className="text-sm font-normal text-[#AE1F17]"

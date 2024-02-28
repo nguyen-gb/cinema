@@ -1,4 +1,4 @@
-import { Product } from "../types/product.type";
+import { Product } from "../types/movie.type";
 import { Showtimes, Times } from "../types/showtimes.type";
 import { SuccessResponse } from "../types/utils.type";
 import http from "../utils/http";

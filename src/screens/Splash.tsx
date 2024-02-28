@@ -19,7 +19,7 @@ export default function SplashScreen() {
       setIsAuthenticated(initialContext.isAuthenticated);
       setProfile(initialContext.profile);
       if (initialContext.isAuthenticated) {
-        navigation.navigate("Login");
+        navigation.navigate("Home");
       } else {
         navigation.navigate("Login");
       }
