@@ -110,7 +110,6 @@ const CreateNewPasswordScreen: FC = () => {
             placeholder="OTP"
             onChangeText={(text) => setOtp(text)}
             value={otp}
-            secureTextEntry={true}
           />
           <TextInput
             className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[20px]"

@@ -4,6 +4,7 @@ import {
   MagnifyingGlassIcon,
 } from "react-native-heroicons/outline";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigation } from "@react-navigation/native";
 
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import {
@@ -18,9 +19,11 @@ import TrendingMovies from "components/TrendingMovies";
 import MovieList from "components/MovieList";
 import movieApi from "apis/movie.api";
 import { Movie } from "types/movie.type";
+import Loading from "components/Loading";
 
 const ios = Platform.OS == "ios";
 const HomeScreen: FC = () => {
+  const navigation = useNavigation<any>();
   const [trending, setTrending] = useState<Movie[]>([]);
   const [showing, setShowing] = useState<Movie[]>([]);
   const [upcoming, setUpcoming] = useState<Movie[]>([]);
@@ -55,7 +58,7 @@ const HomeScreen: FC = () => {
         <View className="flex-row justify-between items-center mx-4">
           <Bars3CenterLeftIcon size="30" strokeWidth={2} color="#AE1F17" />
           <Image source={require("../assets/logo.png")} />
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Search")}>
             <MagnifyingGlassIcon size={30} strokeWidth={2} color="#AE1F17" />
           </TouchableOpacity>
         </View>

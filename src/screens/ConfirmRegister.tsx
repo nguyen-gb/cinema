@@ -40,7 +40,7 @@ const ConfirmRegisterScreen: FC = () => {
       inputs.current[index - 1]?.focus();
     }
 
-    if (!parseInt(value) && value !== "") {
+    if (!parseInt(value) && value !== "" && Number(value) !== 0) {
       return;
     }
 
