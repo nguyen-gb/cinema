@@ -1,71 +1,64 @@
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
+import movieApi from "apis/movie.api";
+import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
+import React from "react";
+import { ChevronLeftIcon } from "react-native-heroicons/outline";
+
 import {
   View,
   Text,
   Dimensions,
-  TextInput,
-  TouchableOpacity,
   ScrollView,
   TouchableWithoutFeedback,
   Image,
+  TouchableOpacity,
 } from "react-native";
-import React, { useCallback, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { debounce } from "lodash";
-import { XMarkIcon } from "react-native-heroicons/outline";
-import { useQuery } from "@tanstack/react-query";
-
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar as ExpoStatusBar } from "expo-status-bar";
-import movieApi from "apis/movie.api";
 import Loading from "components/Loading";
 
 const { width, height } = Dimensions.get("window");
 
-export default function SearchScreen() {
+interface Props {
+  title: string;
+  status: number;
+}
+
+export default function ListMovieScreen() {
+  const { title, status } = useRoute().params as Props;
+
   const navigation = useNavigation<any>();
-  const [keySearch, setKeySearch] = useState<string>("");
 
   const { data, isLoading } = useQuery({
-    queryKey: [keySearch],
+    queryKey: [status],
     queryFn: () => {
-      return movieApi.getMovies({ key_search: keySearch });
+      return movieApi.getMovies({ status: status });
     },
     staleTime: 3 * 60 * 1000,
   });
   const movie = data?.data.data;
 
-  const handleSearch = (value: string) => {
-    setKeySearch(value);
-  };
-
-  const handleTextDebounce = useCallback(debounce(handleSearch, 400), []);
-
   return (
     <SafeAreaView className="bg-white flex-1">
       <ExpoStatusBar style="dark" />
-      <View className="mx-4 mb-3 flex-row justify-between items-center border border-primary rounded-full">
-        <TextInput
-          onChangeText={handleTextDebounce}
-          placeholder="Search..."
-          className="pb-1 pl-6 flex-1 text-base font-semibold tracking-wider"
-        />
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Home")}
-          className="rounded-full p-3 m-1 bg-primary"
-        >
-          <XMarkIcon size="25" color="white" />
-        </TouchableOpacity>
+      <View className="w-full py-3">
+        <View className="z-20 w-full flex flex-row justify-start items-center px-4">
+          <TouchableOpacity
+            className="mr-2"
+            onPress={() => navigation.goBack()}
+          >
+            <ChevronLeftIcon size="28" strokeWidth={2.5} color="black" />
+          </TouchableOpacity>
+          <Text className="text-xl font-semibold">{title}</Text>
+        </View>
       </View>
-      {keySearch && isLoading && <Loading />}
-      {keySearch && !isLoading && movie && movie.length > 0 && (
+      {isLoading && <Loading />}
+      {!isLoading && movie && movie.length > 0 && (
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 15 }}
           className="space-y-3"
         >
-          <Text className="text-primary font-semibold ml-1">
-            Results ({movie.length})
-          </Text>
           <View className="flex-row justify-between flex-wrap">
             {movie.map((item) => {
               return (
@@ -95,7 +88,7 @@ export default function SearchScreen() {
           </View>
         </ScrollView>
       )}
-      {!isLoading && (!keySearch || !movie || movie.length === 0) && (
+      {!isLoading && (!movie || movie.length === 0) && (
         <View className="flex-row justify-center items-center mt-20">
           <Image
             source={require("../assets/movie_time.png")}

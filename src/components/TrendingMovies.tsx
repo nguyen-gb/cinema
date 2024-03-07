@@ -2,11 +2,11 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import Carousel from "react-native-snap-carousel";
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, Animated } from "react-native";
 import MovieCard from "./MovieCard";
 import { Movie } from "types/movie.type";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 interface Props {
   data: Movie[];
@@ -41,8 +41,16 @@ export default function TrendingMovies(props: Props) {
       {isLoading && (
         <Carousel
           data={Array.from({ length: 3 })}
-          renderItem={({ item }) => (
-            <MovieCard item={item} handleClick={() => handleClick(item)} />
+          renderItem={() => (
+            <Animated.View className="space-y-8 animate-pulse md:space-y-0 md:space-x-8 rtl:space-x-reverse md:flex md:items-center rounded-3xl">
+              <Animated.View
+                style={{
+                  width: width * 0.7,
+                  height: height * 0.5,
+                }}
+                className="flex items-center justify-center bg-gray-300 sm:w-96 dark:bg-gray-700 rounded-3xl"
+              ></Animated.View>
+            </Animated.View>
           )}
           firstItem={1}
           inactiveSlideOpacity={0.6}

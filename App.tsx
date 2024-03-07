@@ -15,6 +15,9 @@ import CreateNewPasswordScreen from "screens/CreateNewPassword";
 import HomeScreen from "screens/Home";
 import MovieScreen from "screens/Movie";
 import SearchScreen from "screens/Search";
+import ListMovieScreen from "screens/ListMovie";
+import ShowtimeScreen from "screens/Showtime";
+
 import Toast, {
   BaseToastProps,
   ErrorToast,
@@ -82,6 +85,8 @@ function App(): JSX.Element {
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Movie" component={MovieScreen} />
             <Stack.Screen name="Search" component={SearchScreen} />
+            <Stack.Screen name="ListMovie" component={ListMovieScreen} />
+            <Stack.Screen name="Showtime" component={ShowtimeScreen} />
           </Stack.Navigator>
           <Toast config={toastConfig} />
         </NavigationContainer>

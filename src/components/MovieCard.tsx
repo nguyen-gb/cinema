@@ -15,6 +15,7 @@ export default function MovieCard(props: Props) {
   return (
     <TouchableWithoutFeedback onPress={handleClick}>
       <Image
+        src={item.poster}
         source={require("../assets/movie_demo.png")}
         style={{
           width: width * 0.7,

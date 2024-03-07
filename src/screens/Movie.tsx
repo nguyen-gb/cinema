@@ -3,19 +3,8 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Dimensions,
-  Platform,
-  Image,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
 import { Movie } from "types/movie.type";
-
-const ios = Platform.OS == "ios";
-const topMargin = ios ? "" : "mt-3";
 
 export default function MovieScreen() {
   const { params } = useRoute();
@@ -25,17 +14,9 @@ export default function MovieScreen() {
   const movie = (params as any).movie as Movie;
 
   return (
-    <ScrollView
-      contentContainerStyle={{ paddingBottom: 20 }}
-      className="flex-1 bg-white"
-    >
+    <View className="flex-1 bg-white">
       <View className="w-full py-3">
-        <SafeAreaView
-          className={
-            "z-20 w-full flex flex-row justify-start items-center px-4 " +
-            topMargin
-          }
-        >
+        <SafeAreaView className="z-20 w-full flex flex-row justify-start items-center px-4">
           <TouchableOpacity
             className="mr-2"
             onPress={() => navigation.goBack()}
@@ -45,7 +26,10 @@ export default function MovieScreen() {
           <Text className="text-xl font-semibold">{movie.name}</Text>
         </SafeAreaView>
       </View>
-      <View className="w-full">
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: 20 }}
+        className="flex-1 w-full"
+      >
         <Image className="w-full h-[250px]" src={movie.thumbnail} />
         <View className="flex-row mx-4">
           <View className="w-[100px] h-[150px] mt-[-20px]">
@@ -124,12 +108,15 @@ export default function MovieScreen() {
             </Text>
           )}
         </View>
-        <TouchableOpacity className="px-[16px] py-[12px] bg-[#AE1F17] rounded-lg mx-4 my-4">
-          <Text className="text-center text-[16px] font-semibold text-white">
-            Book now
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+      <TouchableOpacity
+        className="fixed bottom-0 px-[16px] py-[12px] bg-[#AE1F17] rounded-lg mx-4 my-4"
+        onPress={() => navigation.navigate("Showtime", { movie })}
+      >
+        <Text className="text-center text-[16px] font-semibold text-white">
+          Book now
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 }

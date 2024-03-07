@@ -92,8 +92,10 @@ export const getIdFromMovieId = (nameId: string) => {
 };
 
 export const isTodayShowTime = (date: string) => {
+  const [month, day, year] = date.split("/");
+  const dateFormat = new Date(`${year}-${month}-${day}`);
   const currentDate = new Date();
-  const targetDate = new Date(date);
+  const targetDate = new Date(dateFormat);
   if (
     currentDate.getDate() === targetDate.getDate() &&
     currentDate.getMonth() === targetDate.getMonth() &&

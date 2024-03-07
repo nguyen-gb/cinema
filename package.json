@@ -16,6 +16,7 @@
     "@types/lodash": "^4.14.202",
     "@types/react-native-snap-carousel": "^3.8.10",
     "axios": "^1.6.7",
+    "classnames": "^2.5.1",
     "expo": "~50.0.7",
     "expo-linear-gradient": "^12.7.2",
     "expo-status-bar": "~1.11.1",

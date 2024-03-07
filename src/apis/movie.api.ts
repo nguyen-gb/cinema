@@ -13,6 +13,9 @@ const movieApi = {
   getMovieDetail(id: string) {
     return http.get<SuccessResponse<Movie>>(`${URL}/${id}`);
   },
+  getMostMovies() {
+    return http.get<SuccessResponse<Movie[]>>(`${URL}/most-view`);
+  },
 };
 
 export default movieApi;

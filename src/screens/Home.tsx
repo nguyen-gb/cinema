@@ -19,7 +19,6 @@ import TrendingMovies from "components/TrendingMovies";
 import MovieList from "components/MovieList";
 import movieApi from "apis/movie.api";
 import { Movie } from "types/movie.type";
-import Loading from "components/Loading";
 
 const ios = Platform.OS == "ios";
 const HomeScreen: FC = () => {
@@ -27,6 +26,14 @@ const HomeScreen: FC = () => {
   const [trending, setTrending] = useState<Movie[]>([]);
   const [showing, setShowing] = useState<Movie[]>([]);
   const [upcoming, setUpcoming] = useState<Movie[]>([]);
+
+  const { data: dataTrending, isLoading: isLoadingTrending } = useQuery({
+    queryKey: ["most"],
+    queryFn: () => {
+      return movieApi.getMostMovies();
+    },
+    staleTime: 3 * 60 * 1000,
+  });
 
   const { data: dataShowing, isLoading: isLoadingShowing } = useQuery({
     queryKey: ["showing"],
@@ -44,6 +51,17 @@ const HomeScreen: FC = () => {
     staleTime: 3 * 60 * 1000,
   });
 
+  const navigateToListShowing = () => {
+    navigation.navigate("ListMovie", { title: "Showing", status: 1 });
+  };
+
+  const navigateToListUpcoming = () => {
+    navigation.navigate("ListMovie", { title: "Upcoming", status: 2 });
+  };
+
+  useEffect(() => {
+    setTrending(dataTrending?.data.data as Movie[]);
+  }, [dataTrending]);
   useEffect(() => {
     setShowing(dataShowing?.data.data as Movie[]);
   }, [dataShowing]);
@@ -67,18 +85,20 @@ const HomeScreen: FC = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 10 }}
       >
-        <TrendingMovies data={trending} isLoading={true} />
+        <TrendingMovies data={trending} isLoading={isLoadingTrending} />
         <MovieList
           key="showing"
           title="Showing"
           data={showing}
           isLoading={isLoadingShowing}
+          handleViewAll={navigateToListShowing}
         />
         <MovieList
           key="upcoming"
           title="Upcoming"
           data={upcoming}
           isLoading={isLoadingUpcoming}
+          handleViewAll={navigateToListUpcoming}
         />
       </ScrollView>
     </View>
