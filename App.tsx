@@ -17,6 +17,8 @@ import MovieScreen from "screens/Movie";
 import SearchScreen from "screens/Search";
 import ListMovieScreen from "screens/ListMovie";
 import ShowtimeScreen from "screens/Showtime";
+import BookTicketScreen from "screens/BookTicket";
+import ListComboScreen from "screens/ListCombo";
 
 import Toast, {
   BaseToastProps,
@@ -87,6 +89,8 @@ function App(): JSX.Element {
             <Stack.Screen name="Search" component={SearchScreen} />
             <Stack.Screen name="ListMovie" component={ListMovieScreen} />
             <Stack.Screen name="Showtime" component={ShowtimeScreen} />
+            <Stack.Screen name="BookTicket" component={BookTicketScreen} />
+            <Stack.Screen name="ListCombo" component={ListComboScreen} />
           </Stack.Navigator>
           <Toast config={toastConfig} />
         </NavigationContainer>

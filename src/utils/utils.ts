@@ -107,42 +107,46 @@ export const isTodayShowTime = (date: string) => {
   }
 };
 
+export const formatShowTime = (date: string) => {
+  const [month, day, year] = date.split("/");
+  const dateFormat = new Date(`${year}-${month}-${day}`);
+  return dateFormat;
+};
+
 export function getCurrentDayOfWeek(): DayOfWeek {
   return new Date().getDay() as DayOfWeek;
 }
 
-// export function calculateTicketPrice(seatType: SeatType): number {
-//   const currentUrl = window.location.href
-//   const url = new URL(currentUrl)
-//   const format = url.searchParams.get('format')
+export function calculateTicketPrice(seatType: SeatType): number {
+  const format = "2D";
 
-//   const dayOfWeek = getCurrentDayOfWeek()
+  const dayOfWeek = getCurrentDayOfWeek();
 
-//   const regularSeatPrices = {
-//     0: 80000,
-//     1: format === '2D' ? 60000 : 70000,
-//     2: format === '2D' ? 55000 : 60000,
-//     3: format === '2D' ? 60000 : 70000,
-//     4: format === '2D' ? 60000 : 70000,
-//     5: 80000,
-//     6: 80000
-//   }
+  const regularSeatPrices = {
+    0: 80000,
+    1: format === "2D" ? 60000 : 70000,
+    2: format === "2D" ? 55000 : 60000,
+    3: format === "2D" ? 60000 : 70000,
+    4: format === "2D" ? 60000 : 70000,
+    5: 80000,
+    6: 80000,
+  };
 
-//   const doubleSeatPrices = {
-//     0: format === '2D' ? 175000 : 180000,
-//     1: format === '2D' ? 135000 : 160000,
-//     2: format === '2D' ? 120000 : 140000,
-//     3: format === '2D' ? 135000 : 160000,
-//     4: format === '2D' ? 135000 : 160000,
-//     5: format === '2D' ? 175000 : 180000,
-//     6: format === '2D' ? 175000 : 180000
-//   }
+  const doubleSeatPrices = {
+    0: format === "2D" ? 175000 : 180000,
+    1: format === "2D" ? 135000 : 160000,
+    2: format === "2D" ? 120000 : 140000,
+    3: format === "2D" ? 135000 : 160000,
+    4: format === "2D" ? 135000 : 160000,
+    5: format === "2D" ? 175000 : 180000,
+    6: format === "2D" ? 175000 : 180000,
+  };
 
-//   if (seatType === SeatType.single_chair) {
-//     return regularSeatPrices[dayOfWeek]
-//   } else if (seatType === SeatType.double_chair) {
-//     return doubleSeatPrices[dayOfWeek]
-//   } else {
-//     throw new Error('Invalid seat type')
-//   }
-// }
+  if (seatType === SeatType.single_chair) {
+    return regularSeatPrices[dayOfWeek];
+  } else if (seatType === SeatType.double_chair) {
+    return doubleSeatPrices[dayOfWeek];
+  } else {
+    throw new Error("Invalid seat type");
+  }
+}

@@ -13,7 +13,7 @@ import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { Movie } from "types/movie.type";
 import cinemaApi from "apis/cinema.api";
 import showtimeApi from "apis/showtime.api";
-import { isTodayShowTime } from "utils/utils";
+import { formatShowTime, isTodayShowTime } from "utils/utils";
 
 export default function ShowtimeScreen() {
   const { params } = useRoute();
@@ -51,7 +51,11 @@ export default function ShowtimeScreen() {
   };
 
   const handleChooseTime = (showtime_id: string) => {
-    console.log(showtime_id);
+    const data = {
+      showtimeId: showtime_id,
+      cinema: cinemas?.find((cinema) => cinema._id === cinemaId),
+    };
+    navigation.navigate("BookTicket", data);
   };
 
   useEffect(() => {
@@ -136,7 +140,9 @@ export default function ShowtimeScreen() {
                         </Text>
                       ) : (
                         <Text className="mb-[20px] max-w-fit bg-tertiary text-white px-[20px] py-[8px] font-semibold">
-                          {new Date(showtime.time).toLocaleString("en-EN", {
+                          {new Date(
+                            formatShowTime(showtime.time)
+                          ).toLocaleString("en-EN", {
                             month: "long",
                             day: "numeric",
                             weekday: "long",
