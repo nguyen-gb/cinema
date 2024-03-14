@@ -38,6 +38,7 @@ const ListComboScreen: React.FC = () => {
     onSuccess: (data) => {
       if (data.data.status === 200) {
         const bookingId = data.data.data._id;
+        navigation.navigate("Payment", { bookingId });
       } else {
         Toast.show({
           type: "error",
@@ -48,7 +49,17 @@ const ListComboScreen: React.FC = () => {
   });
 
   const handleContinue = () => {
-    const body = { ...dataBookTicket };
+    const body = {
+      ...dataBookTicket,
+      combos: combo.map((c) => {
+        return {
+          combo_id: c._id,
+          combo_type: c.type,
+          quantity: c.quantity,
+        };
+      }),
+    };
+    console.log(body);
     createBookingMutation.mutate(body);
   };
 

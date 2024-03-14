@@ -79,28 +79,28 @@ const ItemCombo = ({ item, setCombo }: PropsItemCombo) => {
   return (
     <View className="flex-row w-full items-center px-4 py-2">
       <View className="flex-1">
-        <Text className="text-base font-medium text-white md:max-w-[200px]">
+        <Text className="text-base font-normal text-white md:max-w-[200px]">
           {item.description}
         </Text>
-        <Text className="text-base text-primary">{`${formatCurrency(
+        <Text className="text-base font-medium text-white">{`${formatCurrency(
           item.price
         )} VND`}</Text>
       </View>
       <View className="ml-4 flex-row space-x-4 items-center">
         <TouchableOpacity
-          className="rounded-sm bg-primary text-white"
+          className="rounded-full bg-primary text-white p-[2px]"
           onPress={() => {
             handleRemoveCombo(item);
           }}
         >
-          <MinusIcon size="28" strokeWidth={2} color="white" />
+          <MinusIcon size="22" strokeWidth={2} color="white" />
         </TouchableOpacity>
-        <Text className="font-bold text-white">{quantity}</Text>
+        <Text className="font-semibold text-lg text-white">{quantity}</Text>
         <TouchableOpacity
-          className="rounded-sm bg-primary text-white"
+          className="rounded-full bg-primary text-white p-[2px]"
           onPress={() => handleAddCombo(item)}
         >
-          <PlusIcon size="28" strokeWidth={2} color="white" />
+          <PlusIcon size="22" strokeWidth={2} color="white" />
         </TouchableOpacity>
       </View>
     </View>
@@ -124,19 +124,32 @@ const Combo = ({ type, items, setCombo }: PropsCombo) => {
     <View className="relative mb-2 inline-block w-full text-left">
       <TouchableOpacity
         onPress={toggleDropdown}
-        className="flex-row w-full items-center justify-between rounded-md border border-primary bg-white px-4 py-2"
+        className={classNames(
+          "flex-row w-full items-center justify-between rounded-md border-2 bg-white px-4 py-2",
+          {
+            "border-primary": isOpen,
+            "border-gray-400": !isOpen,
+          }
+        )}
         id="menu-button"
       >
-        <Text className="text-primary text-base font-medium">{type}</Text>
+        <Text
+          className={classNames("text-base font-medium", {
+            "text-primary": isOpen,
+            "text-gray-400": !isOpen,
+          })}
+        >
+          {type}
+        </Text>
         {isOpen ? (
           <ChevronUpIcon size="28" strokeWidth={2} color="#AE1F17" />
         ) : (
-          <ChevronDownIcon size="28" strokeWidth={2} color="#AE1F17" />
+          <ChevronDownIcon size="28" strokeWidth={2} color="#9ca3af" />
         )}
       </TouchableOpacity>
       <View
         className={classNames(
-          `mt-2 w-full origin-top-right overflow-hidden rounded-md bg-[#1A1D23] shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-1000 ease-in-out`,
+          `mt-2 w-full origin-top-right overflow-hidden rounded-md bg-[#EE2E24]/75 shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-1000 ease-in-out`,
           {
             "max-h-0": !isOpen,
             "max-h-[700px]": isOpen,

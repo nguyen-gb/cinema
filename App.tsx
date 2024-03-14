@@ -19,6 +19,7 @@ import ListMovieScreen from "screens/ListMovie";
 import ShowtimeScreen from "screens/Showtime";
 import BookTicketScreen from "screens/BookTicket";
 import ListComboScreen from "screens/ListCombo";
+import PaymentScreen from "screens/Payment";
 
 import Toast, {
   BaseToastProps,
@@ -91,6 +92,7 @@ function App(): JSX.Element {
             <Stack.Screen name="Showtime" component={ShowtimeScreen} />
             <Stack.Screen name="BookTicket" component={BookTicketScreen} />
             <Stack.Screen name="ListCombo" component={ListComboScreen} />
+            <Stack.Screen name="Payment" component={PaymentScreen} />
           </Stack.Navigator>
           <Toast config={toastConfig} />
         </NavigationContainer>

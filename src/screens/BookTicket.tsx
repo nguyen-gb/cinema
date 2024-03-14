@@ -9,6 +9,7 @@ import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SeatType } from "types/seat.type";
 import { calculateTicketPrice, formatCurrency } from "utils/utils";
+import classNames from "classnames";
 
 interface SeatProps {
   isReserved: boolean;
@@ -29,7 +30,7 @@ const Seat: React.FC<SeatProps> = ({
     isDoubleSeat ? "w-[72px] mx-5" : "w-9"
   } h-9 m-[3px] rounded-md ${
     isReserved
-      ? "bg-red-500 cursor-not-allowed"
+      ? "bg-pink-600 cursor-not-allowed"
       : isSelected
       ? "bg-primary"
       : `${
@@ -62,6 +63,7 @@ const BookTicketScreen: React.FC = () => {
     { seat_number: number; seat_type: number }[]
   >([]);
   const [total, setTotal] = useState(0);
+  const [isActive, setIsActive] = useState(false);
 
   const rows = 9;
   const cols = 9;
@@ -73,24 +75,26 @@ const BookTicketScreen: React.FC = () => {
   });
 
   const handleContinue = () => {
-    const selectedSeatsConvert = selectedSeats.map((seat) => {
-      return {
-        seat_number: String(seat.seat_number),
-        seat_type: Number(seat.seat_type),
+    if (isActive) {
+      const selectedSeatsConvert = selectedSeats.map((seat) => {
+        return {
+          seat_number: String(seat.seat_number),
+          seat_type: Number(seat.seat_type),
+        };
+      });
+      const dataBookTicket = {
+        theater_name: cinema.name,
+        room_id: data?.data.data.room_id as string,
+        movie_id: data?.data.data.movie_id as string,
+        seats: selectedSeatsConvert,
+        time: data?.data.data.time as string,
+        showtime: data?.data.data.showtime as string,
+        combos: [],
       };
-    });
-    const dataBookTicket = {
-      theater_name: cinema.name,
-      room_id: data?.data.data.room_id as string,
-      movie_id: data?.data.data.movie_id as string,
-      seats: selectedSeatsConvert,
-      time: data?.data.data.time as string,
-      showtime: data?.data.data.showtime as string,
-      combos: [],
-    };
-    navigation.navigate("ListCombo", {
-      dataBookTicket,
-    });
+      navigation.navigate("ListCombo", {
+        dataBookTicket,
+      });
+    }
   };
 
   const reservedSeats =
@@ -110,11 +114,14 @@ const BookTicketScreen: React.FC = () => {
     if (seatIndex === -1) {
       setSelectedSeats([...selectedSeats, seat]);
       setTotal((pre) => pre + seatPrice);
+      setIsActive(true);
     } else {
-      setSelectedSeats(
-        selectedSeats.filter((s) => s.seat_number !== seat.seat_number)
+      const currentSeats = selectedSeats.filter(
+        (s) => s.seat_number !== seat.seat_number
       );
+      setSelectedSeats(currentSeats);
       setTotal((pre) => pre - seatPrice);
+      setIsActive(currentSeats.length > 0);
     }
   };
 
@@ -194,7 +201,7 @@ const BookTicketScreen: React.FC = () => {
               <View className="flex flex-row justify-between items-center gap-4">
                 <View className="flex-col justify-start items-start gap-2">
                   <View className="flex-row items-center gap-2">
-                    <View className="flex aspect-square w-8 items-center justify-center rounded-[4px] bg-red-500"></View>
+                    <View className="flex aspect-square w-8 items-center justify-center rounded-[4px] bg-pink-600"></View>
                     <Text>Booked</Text>
                   </View>
                   <View className="flex-row items-center gap-2">
@@ -225,7 +232,10 @@ const BookTicketScreen: React.FC = () => {
           </Text>
         </View>
         <TouchableOpacity
-          className="px-[16px] py-[12px] bg-[#AE1F17] rounded-lg"
+          className={classNames("px-[16px] py-[12px]  rounded-lg", {
+            "bg-[#AE1F17]": isActive,
+            "bg-gray-500": !isActive,
+          })}
           onPress={handleContinue}
         >
           <Text className="text-center text-[16px] font-semibold text-white">
