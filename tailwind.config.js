@@ -9,6 +9,9 @@ module.exports = {
         tertiary: "#640d9a",
         quaternary: "#020510",
       },
+      boxShadow: {
+        ct: "4px 4px 8px rgba(0, 0, 0, 0.12)",
+      },
     },
   },
   plugins: [],
