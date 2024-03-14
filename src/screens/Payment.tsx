@@ -21,6 +21,7 @@ const PaymentScreen: React.FC = () => {
     queryFn: () => bookingApi.getBookingDetail(bookingId as string),
   });
   const bookingData = data?.data.data;
+  console.log(bookingData);
 
   const handlePayment = () => {};
 
@@ -47,6 +48,7 @@ const PaymentScreen: React.FC = () => {
         <View className="w-full flex-row items-start p-4 border-gray-500 border rounded-xl mb-2">
           <View className="w-[90px] h-[126px] mr-4">
             <Image
+              src={bookingData?.movie_poster}
               source={require("../assets/movie_demo.png")}
               className="w-full h-full object-contain rounded-xl"
             />
@@ -54,7 +56,7 @@ const PaymentScreen: React.FC = () => {
           <View className="flex-col items-start">
             <View className="flex-row items-center mb-1">
               <Text className="text-white text-center text-xs leading-4 bg-[#E89C29] rounded-2xl w-[36px] mr-2">
-                P
+                {bookingData?.movie_age}
               </Text>
               <Text className="text=[#646464] text-base">
                 {bookingData?.movie_name}

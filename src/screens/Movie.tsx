@@ -23,7 +23,11 @@ export default function MovieScreen() {
           >
             <ChevronLeftIcon size="28" strokeWidth={2.5} color="black" />
           </TouchableOpacity>
-          <Text className="text-xl font-semibold">{movie.name}</Text>
+          <Text className="text-xl font-semibold">
+            {movie.name.length > 25
+              ? movie.name.slice(0, 25) + "..."
+              : movie.name}
+          </Text>
         </SafeAreaView>
       </View>
       <ScrollView
@@ -39,7 +43,9 @@ export default function MovieScreen() {
             />
           </View>
           <View className="flex-col p-2">
-            <Text className="text-base font-semibold my-1">{movie.name}</Text>
+            <Text className="text-base font-semibold my-1 mr-20">
+              {movie.name}
+            </Text>
             <Text
               className="text-xs font-normal my-1 mr-20"
               numberOfLines={1}
