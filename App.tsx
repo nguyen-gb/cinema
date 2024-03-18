@@ -1,8 +1,9 @@
+import "react-native-gesture-handler";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+
 import React, { useContext, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 //Screens
 import { AppContext, AppProvider } from "contexts/app.context";
@@ -28,6 +29,7 @@ import Toast, {
   SuccessToast,
 } from "react-native-toast-message";
 import { eventEmitter } from "utils/auth";
+import CustomDrawer from "components/CustomDrawer";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,7 +42,7 @@ const queryClient = new QueryClient({
 
 function App(): JSX.Element {
   const { reset } = useContext(AppContext);
-  const Stack = createNativeStackNavigator();
+  const Drawer = createDrawerNavigator();
 
   const toastConfig = {
     success: (props: BaseToastProps) => (
@@ -65,35 +67,36 @@ function App(): JSX.Element {
     <QueryClientProvider client={queryClient}>
       <AppProvider>
         <NavigationContainer>
-          <Stack.Navigator
+          <Drawer.Navigator
+            drawerContent={() => <CustomDrawer />}
             screenOptions={{
               headerShown: false,
             }}
           >
-            <Stack.Screen name="Splash" component={SplashScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
-            <Stack.Screen
+            <Drawer.Screen name="Splash" component={SplashScreen} />
+            <Drawer.Screen name="Login" component={LoginScreen} />
+            <Drawer.Screen name="Register" component={RegisterScreen} />
+            <Drawer.Screen
               name="ConfirmRegister"
               component={ConfirmRegisterScreen}
             />
-            <Stack.Screen
+            <Drawer.Screen
               name="ForgotPassword"
               component={ForgotPasswordScreen}
             />
-            <Stack.Screen
+            <Drawer.Screen
               name="CreateNewPassword"
               component={CreateNewPasswordScreen}
             />
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Movie" component={MovieScreen} />
-            <Stack.Screen name="Search" component={SearchScreen} />
-            <Stack.Screen name="ListMovie" component={ListMovieScreen} />
-            <Stack.Screen name="Showtime" component={ShowtimeScreen} />
-            <Stack.Screen name="BookTicket" component={BookTicketScreen} />
-            <Stack.Screen name="ListCombo" component={ListComboScreen} />
-            <Stack.Screen name="Payment" component={PaymentScreen} />
-          </Stack.Navigator>
+            <Drawer.Screen name="Home" component={HomeScreen} />
+            <Drawer.Screen name="Movie" component={MovieScreen} />
+            <Drawer.Screen name="Search" component={SearchScreen} />
+            <Drawer.Screen name="ListMovie" component={ListMovieScreen} />
+            <Drawer.Screen name="Showtime" component={ShowtimeScreen} />
+            <Drawer.Screen name="BookTicket" component={BookTicketScreen} />
+            <Drawer.Screen name="ListCombo" component={ListComboScreen} />
+            <Drawer.Screen name="Payment" component={PaymentScreen} />
+          </Drawer.Navigator>
           <Toast config={toastConfig} />
         </NavigationContainer>
       </AppProvider>

@@ -32,7 +32,6 @@ const HomeScreen: FC = () => {
     queryFn: () => {
       return movieApi.getMostMovies();
     },
-    staleTime: 3 * 60 * 1000,
   });
 
   const { data: dataShowing, isLoading: isLoadingShowing } = useQuery({
@@ -40,7 +39,6 @@ const HomeScreen: FC = () => {
     queryFn: () => {
       return movieApi.getMovies({ status: 1 });
     },
-    staleTime: 3 * 60 * 1000,
   });
 
   const { data: dataUpcoming, isLoading: isLoadingUpcoming } = useQuery({
@@ -74,7 +72,9 @@ const HomeScreen: FC = () => {
       <SafeAreaView className={ios ? "-mb-2" : "mb-3"}>
         <ExpoStatusBar style="dark" />
         <View className="flex-row justify-between items-center mx-4">
-          <Bars3CenterLeftIcon size="30" strokeWidth={2} color="#AE1F17" />
+          <TouchableOpacity onPress={() => navigation.openDrawer()}>
+            <Bars3CenterLeftIcon size="30" strokeWidth={2} color="#AE1F17" />
+          </TouchableOpacity>
           <Image source={require("../assets/logo.png")} />
           <TouchableOpacity onPress={() => navigation.navigate("Search")}>
             <MagnifyingGlassIcon size={30} strokeWidth={2} color="#AE1F17" />
