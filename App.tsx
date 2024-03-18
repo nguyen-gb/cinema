@@ -21,6 +21,7 @@ import ShowtimeScreen from "screens/Showtime";
 import BookTicketScreen from "screens/BookTicket";
 import ListComboScreen from "screens/ListCombo";
 import PaymentScreen from "screens/Payment";
+import InformationScreen from "screens/Information";
 
 import Toast, {
   BaseToastProps,
@@ -68,6 +69,7 @@ function App(): JSX.Element {
       <AppProvider>
         <NavigationContainer>
           <Drawer.Navigator
+            backBehavior="history"
             drawerContent={() => <CustomDrawer />}
             screenOptions={{
               headerShown: false,
@@ -96,6 +98,7 @@ function App(): JSX.Element {
             <Drawer.Screen name="BookTicket" component={BookTicketScreen} />
             <Drawer.Screen name="ListCombo" component={ListComboScreen} />
             <Drawer.Screen name="Payment" component={PaymentScreen} />
+            <Drawer.Screen name="Information" component={InformationScreen} />
           </Drawer.Navigator>
           <Toast config={toastConfig} />
         </NavigationContainer>

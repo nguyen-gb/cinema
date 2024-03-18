@@ -60,29 +60,11 @@ export default function CustomDrawer() {
               <ChevronRightIcon size="22" strokeWidth={2} color="white" />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate("MyAccount")}
+              onPress={() => navigation.navigate("Information")}
               className="flex-row items-center p-2"
             >
               <Text className="text-base font-semibold text-white min-w-[170px]">
                 My Account
-              </Text>
-              <ChevronRightIcon size="22" strokeWidth={2} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("PurchaseHistory")}
-              className="flex-row items-center p-2"
-            >
-              <Text className="text-base font-semibold text-white min-w-[170px]">
-                Purchase History
-              </Text>
-              <ChevronRightIcon size="22" strokeWidth={2} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("BonusPointsHistory")}
-              className="flex-row items-center p-2"
-            >
-              <Text className="text-base font-semibold text-white min-w-[170px]">
-                Bonus Points History
               </Text>
               <ChevronRightIcon size="22" strokeWidth={2} color="white" />
             </TouchableOpacity>
@@ -110,11 +92,13 @@ export default function CustomDrawer() {
           </View>
         )}
       </DrawerContentScrollView>
-      <TouchableOpacity onPress={handleLogout} className="p-6">
-        <Text className="text-center text-base font-semibold text-white">
-          Logout
-        </Text>
-      </TouchableOpacity>
+      {isAuthenticated && (
+        <TouchableOpacity onPress={handleLogout} className="p-6">
+          <Text className="text-center text-base font-semibold text-white">
+            Logout
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
