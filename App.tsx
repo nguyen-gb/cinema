@@ -22,6 +22,8 @@ import BookTicketScreen from "screens/BookTicket";
 import ListComboScreen from "screens/ListCombo";
 import PaymentScreen from "screens/Payment";
 import InformationScreen from "screens/Information";
+import ChangePasswordScreen from "screens/ChangePassword";
+import PurchaseHistoryScreen from "screens/PurchaseHistory";
 
 import Toast, {
   BaseToastProps,
@@ -99,6 +101,14 @@ function App(): JSX.Element {
             <Drawer.Screen name="ListCombo" component={ListComboScreen} />
             <Drawer.Screen name="Payment" component={PaymentScreen} />
             <Drawer.Screen name="Information" component={InformationScreen} />
+            <Drawer.Screen
+              name="ChangePassword"
+              component={ChangePasswordScreen}
+            />
+            <Drawer.Screen
+              name="PurchaseHistory"
+              component={PurchaseHistoryScreen}
+            />
           </Drawer.Navigator>
           <Toast config={toastConfig} />
         </NavigationContainer>

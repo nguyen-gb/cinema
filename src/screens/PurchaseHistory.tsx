@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   ChevronLeftIcon,
@@ -6,86 +6,14 @@ import {
   LockClosedIcon,
   StarIcon,
 } from "react-native-heroicons/outline";
-import { useMutation } from "@tanstack/react-query";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  TextInput,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
 import { AppContext } from "contexts/app.context";
-import { User } from "types/user.type";
-import userApi from "apis/user.api";
-import { isAxiosUnprocessableEntityError } from "utils/utils";
-import { ErrorResponse } from "types/utils.type";
-import Toast from "react-native-toast-message";
-import { setProfileToLS } from "utils/auth";
 
-export default function InformationScreen() {
-  const { profile, setProfile } = useContext(AppContext);
+export default function PurchaseHistoryScreen() {
+  const { profile } = useContext(AppContext);
   const navigation = useNavigation<any>();
-
-  const [fullname, setFullname] = useState(profile?.name);
-  const [email, setEmail] = useState(profile?.email);
-  const [phone, setPhone] = useState(profile?.phone);
-
-  const updateMutation = useMutation({
-    mutationFn: (body: Omit<User, "_id">) =>
-      userApi.updateUser(profile?._id as string, body),
-  });
-
-  const handleSubmit = () => {
-    if (!fullname) {
-      Toast.show({
-        type: "error",
-        text1: "Please enter your full name to continue!",
-      });
-      return;
-    }
-    if (!email) {
-      Toast.show({
-        type: "error",
-        text1: "Please enter your email to continue!",
-      });
-      return;
-    }
-    if (!phone) {
-      Toast.show({
-        type: "error",
-        text1: "Please enter your phone to continue!",
-      });
-      return;
-    }
-
-    const body = {
-      name: fullname,
-      email: email,
-      phone: phone,
-    };
-    updateMutation.mutate(body, {
-      onSuccess: (data) => {
-        setProfile(data.data.data);
-        setProfileToLS(data.data.data);
-        Toast.show({
-          type: "success",
-          text1: data.data.message,
-        });
-      },
-      onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
-          const message = error.response?.data.message;
-          Toast.show({
-            type: "error",
-            text1: message,
-          });
-        }
-      },
-    });
-  };
 
   return (
     <View className="flex-1 bg-white">
@@ -93,7 +21,7 @@ export default function InformationScreen() {
         <SafeAreaView className="z-20 w-full flex flex-row justify-start items-center px-4">
           <TouchableOpacity
             className="mr-2"
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate("Home")}
           >
             <ChevronLeftIcon size="28" strokeWidth={2.5} color="black" />
           </TouchableOpacity>
@@ -148,37 +76,19 @@ export default function InformationScreen() {
             </View>
           </View>
           <Text className="text-[20px] font-semibold mb-[12px]">
-            Information
+            Purchase history
           </Text>
-          <TextInput
-            className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[12px]"
-            placeholder="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-            editable={false}
-          />
-          <TextInput
-            className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[12px]"
-            placeholder="Full name"
-            onChangeText={(text) => setFullname(text)}
-            value={fullname}
-          />
-          <TextInput
-            className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[12px]"
-            placeholder="Phone"
-            onChangeText={(text) => setPhone(text)}
-            value={phone}
-          />
+          <View className="border-gray-700 border rounded-xl">
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 15 }}
+            >
+              <Text>hihi</Text>
+            </ScrollView>
+          </View>
         </View>
       </ScrollView>
-      <TouchableOpacity
-        onPress={handleSubmit}
-        className="fixed bottom-0 px-[16px] py-[12px] bg-[#AE1F17] rounded-lg mx-4 my-4"
-      >
-        <Text className="text-center text-[16px] font-semibold text-white">
-          Save
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 }

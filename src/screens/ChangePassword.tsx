@@ -18,58 +18,64 @@ import {
   TextInput,
 } from "react-native";
 import { AppContext } from "contexts/app.context";
-import { User } from "types/user.type";
 import userApi from "apis/user.api";
+import Toast from "react-native-toast-message";
 import { isAxiosUnprocessableEntityError } from "utils/utils";
 import { ErrorResponse } from "types/utils.type";
-import Toast from "react-native-toast-message";
-import { setProfileToLS } from "utils/auth";
 
-export default function InformationScreen() {
-  const { profile, setProfile } = useContext(AppContext);
+export default function ChangePasswordScreen() {
+  const { profile } = useContext(AppContext);
   const navigation = useNavigation<any>();
 
-  const [fullname, setFullname] = useState(profile?.name);
-  const [email, setEmail] = useState(profile?.email);
-  const [phone, setPhone] = useState(profile?.phone);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const updateMutation = useMutation({
-    mutationFn: (body: Omit<User, "_id">) =>
-      userApi.updateUser(profile?._id as string, body),
+  const changPassMutation = useMutation({
+    mutationFn: (body: {
+      password: string;
+      new_password: string;
+      confirm_password: string;
+    }) => userApi.changePassword(body),
   });
 
   const handleSubmit = () => {
-    if (!fullname) {
+    if (!currentPassword) {
       Toast.show({
         type: "error",
-        text1: "Please enter your full name to continue!",
+        text1: "Please enter your current password to continue!",
       });
       return;
     }
-    if (!email) {
+    if (!password) {
       Toast.show({
         type: "error",
-        text1: "Please enter your email to continue!",
+        text1: "Please enter your password to continue!",
       });
       return;
     }
-    if (!phone) {
+    if (!confirmPassword) {
       Toast.show({
         type: "error",
-        text1: "Please enter your phone to continue!",
+        text1: "Please enter your confirm password to continue!",
+      });
+      return;
+    }
+    if (confirmPassword !== password) {
+      Toast.show({
+        type: "error",
+        text1: "Confirm password doesn't match your password!",
       });
       return;
     }
 
     const body = {
-      name: fullname,
-      email: email,
-      phone: phone,
+      password: currentPassword,
+      new_password: password,
+      confirm_password: confirmPassword,
     };
-    updateMutation.mutate(body, {
+    changPassMutation.mutate(body, {
       onSuccess: (data) => {
-        setProfile(data.data.data);
-        setProfileToLS(data.data.data);
         Toast.show({
           type: "success",
           text1: data.data.message,
@@ -148,26 +154,28 @@ export default function InformationScreen() {
             </View>
           </View>
           <Text className="text-[20px] font-semibold mb-[12px]">
-            Information
+            Change password
           </Text>
           <TextInput
-            className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[12px]"
-            placeholder="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-            editable={false}
+            className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[20px]"
+            placeholder="Current password"
+            onChangeText={(text) => setCurrentPassword(text)}
+            value={currentPassword}
+            secureTextEntry={true}
           />
           <TextInput
-            className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[12px]"
-            placeholder="Full name"
-            onChangeText={(text) => setFullname(text)}
-            value={fullname}
+            className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[20px]"
+            placeholder="New password"
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            secureTextEntry={true}
           />
           <TextInput
-            className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[12px]"
-            placeholder="Phone"
-            onChangeText={(text) => setPhone(text)}
-            value={phone}
+            className="px-[16px] py-[12px] border-[#F4F4F4] border rounded-lg mb-[20px]"
+            placeholder="Confirm password"
+            onChangeText={(text) => setConfirmPassword(text)}
+            value={confirmPassword}
+            secureTextEntry={true}
           />
         </View>
       </ScrollView>
