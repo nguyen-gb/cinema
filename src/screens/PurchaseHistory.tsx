@@ -6,14 +6,25 @@ import {
   LockClosedIcon,
   StarIcon,
 } from "react-native-heroicons/outline";
+import { useQuery } from "@tanstack/react-query";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
 import { AppContext } from "contexts/app.context";
+import userApi from "apis/user.api";
+import { formatCurrency } from "utils/utils";
 
 export default function PurchaseHistoryScreen() {
   const { profile } = useContext(AppContext);
   const navigation = useNavigation<any>();
+
+  const { data: hisBookingsData } = useQuery({
+    queryKey: ["purchases", profile?._id],
+    queryFn: () => userApi.getHistoryBooking(profile?._id as string),
+  });
+
+  const hisBookings = hisBookingsData?.data.data;
+  console.log(hisBookings);
 
   return (
     <View className="flex-1 bg-white">
@@ -78,15 +89,54 @@ export default function PurchaseHistoryScreen() {
           <Text className="text-[20px] font-semibold mb-[12px]">
             Purchase history
           </Text>
-          <View className="border-gray-700 border rounded-xl">
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: 15 }}
-            >
-              <Text>hihi</Text>
-            </ScrollView>
-          </View>
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 15 }}
+          >
+            <View className="w-full flex-col justify-center items-center">
+              {hisBookings?.map((booking) => (
+                <View className="w-full flex-row items-center p-4 border-gray-500 border rounded-xl mb-2">
+                  {booking.payment_status === 1 ? (
+                    <Text className="text-[#38B000] text-2xl font-medium px-[25px]">
+                      Paid
+                    </Text>
+                  ) : (
+                    <Text className="text-[#F87C7A] text-2xl font-medium px-[25px]">
+                      Unpaid
+                    </Text>
+                  )}
+                  <View className="flex-col">
+                    <Text className="text-base font-medium">
+                      {booking.movie_name.length > 50
+                        ? booking.movie_name.slice(0, 50) + "..."
+                        : booking.movie_name}
+                    </Text>
+                    <Text className="text-sm text-[#646464]">
+                      Cinema:{" "}
+                      {booking.theater_name.length > 40
+                        ? booking.theater_name.slice(0, 40) + "..."
+                        : booking.theater_name}
+                    </Text>
+                    <Text className="text-sm text-[#646464]">
+                      Number of ticket: {booking.seats.length}
+                    </Text>
+                    <Text className="text-sm text-[#646464]">
+                      Total: {formatCurrency(booking.total_amount)}VND
+                    </Text>
+                    <View className="flex-row items-center max-w-[200px] text-right">
+                      <Text className="text-base font-medium">
+                        {booking?.showtime}
+                      </Text>
+                      <Text className="text-base font-medium"> - </Text>
+                      <Text className="text-base font-medium">
+                        {booking?.time}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </ScrollView>
         </View>
       </ScrollView>
     </View>

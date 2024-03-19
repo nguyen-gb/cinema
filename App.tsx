@@ -24,6 +24,7 @@ import PaymentScreen from "screens/Payment";
 import InformationScreen from "screens/Information";
 import ChangePasswordScreen from "screens/ChangePassword";
 import PurchaseHistoryScreen from "screens/PurchaseHistory";
+import CheckBookingScreen from "screens/CheckBooking";
 
 import Toast, {
   BaseToastProps,
@@ -109,6 +110,7 @@ function App(): JSX.Element {
               name="PurchaseHistory"
               component={PurchaseHistoryScreen}
             />
+            <Drawer.Screen name="CheckBooking" component={CheckBookingScreen} />
           </Drawer.Navigator>
           <Toast config={toastConfig} />
         </NavigationContainer>

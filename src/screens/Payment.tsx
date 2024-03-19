@@ -21,9 +21,10 @@ const PaymentScreen: React.FC = () => {
     queryFn: () => bookingApi.getBookingDetail(bookingId as string),
   });
   const bookingData = data?.data.data;
-  console.log(bookingData);
 
-  const handlePayment = () => {};
+  const handlePayment = () => {
+    navigation.navigate("CheckBooking", { bookingId });
+  };
 
   return (
     <View className="flex-1 bg-white">
