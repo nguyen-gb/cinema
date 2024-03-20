@@ -5,7 +5,7 @@ import { SuccessResponse } from "../types/utils.type";
 const URL = "auth/payment";
 
 const paymentApi = {
-  createPaymentUrl(body: { booking_id: string }) {
+  createPaymentUrl(body: { booking_id: string; return_url?: number }) {
     return http.post<SuccessResponse<string>>(
       `${URL}/create-payment-url`,
       body

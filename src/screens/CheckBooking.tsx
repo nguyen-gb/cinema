@@ -14,6 +14,7 @@ import { formatCurrency } from "utils/utils";
 export default function CheckBookingScreen() {
   const { bookingId } = useRoute().params as any;
   const [time, setTime] = useState(0);
+  const [isFailed, setIsFailed] = useState(false);
   const { profile } = useContext(AppContext);
   const navigation = useNavigation<any>();
 
@@ -25,11 +26,18 @@ export default function CheckBookingScreen() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTime((prevTime) => prevTime + 1);
+      if (bookingData && bookingData.payment_status === 1) {
+        clearInterval(interval);
+      } else if (time < 6) {
+        setTime((prevTime) => prevTime + 1);
+      } else {
+        clearInterval(interval);
+        setIsFailed(true);
+      }
     }, 30000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [bookingData, time, setIsFailed]);
 
   return (
     <View className="flex-1 bg-white">
@@ -48,7 +56,7 @@ export default function CheckBookingScreen() {
         contentContainerStyle={{ paddingBottom: 20 }}
         className="flex-1 w-full"
       >
-        {(!bookingData || bookingData.payment_status === 0) && (
+        {!isFailed && (!bookingData || bookingData.payment_status === 0) && (
           <View className="flex-col justify-center items-center px-[36px] py-20">
             <Image source={require("../assets/big_logo.png")} />
             <Progress.CircleSnail
@@ -65,7 +73,7 @@ export default function CheckBookingScreen() {
             </Text>
           </View>
         )}
-        {bookingData && bookingData.payment_status === 1 && (
+        {!isFailed && bookingData && bookingData.payment_status === 1 && (
           <View className="flex-col justify-center items-center px-[30px] pt-[40px]">
             <Image source={require("../assets/success_icon.png")} />
             <Text className="text-xl font-medium my-[22px] text-center">
@@ -150,10 +158,25 @@ export default function CheckBookingScreen() {
             </View>
           </View>
         )}
+        {isFailed && (
+          <View className="flex-col justify-center items-center px-[30px] pt-[40px]">
+            <Image source={require("../assets/error_icon.png")} />
+            <Text className="text-xl font-medium my-[22px] text-center">
+              Payment failed!
+            </Text>
+            <Text className="text-base text-center mb-[40px]">
+              Something went wrong we couldn’t process your payment. Please try
+              payment again or contact our support.
+            </Text>
+          </View>
+        )}
       </ScrollView>
-      {bookingData && bookingData.payment_status === 1 && (
+      {((bookingData && bookingData.payment_status === 1) || isFailed) && (
         <View className="fixed bottom-0 mx-4 my-4 border-t-2 border-[#E8E8E8]">
-          <TouchableOpacity className="px-[16px] py-[12px] bg-[#AE1F17] rounded-lg">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Home")}
+            className="px-[16px] py-[12px] bg-[#AE1F17] rounded-lg"
+          >
             <Text className="text-center text-[16px] font-semibold text-white">
               Go home
             </Text>

@@ -1,15 +1,24 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import classNames from "classnames";
 
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Linking,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import bookingApi from "apis/booking.api";
 import { seatArray } from "constants/seat";
 import { formatCurrency } from "utils/utils";
 import { AppContext } from "contexts/app.context";
+import paymentApi from "apis/payment.api";
+import Toast from "react-native-toast-message";
 
 const PaymentScreen: React.FC = () => {
   const { profile } = useContext(AppContext);
@@ -22,8 +31,27 @@ const PaymentScreen: React.FC = () => {
   });
   const bookingData = data?.data.data;
 
+  const createPaymentUrlMutation = useMutation({
+    mutationFn: paymentApi.createPaymentUrl,
+    onSuccess: async (res) => {
+      const supported = await Linking.canOpenURL(res.data.data);
+      if (supported) {
+        await Linking.openURL(res.data.data);
+        navigation.navigate("CheckBooking", { bookingId });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Payment failed!",
+        });
+      }
+    },
+  });
+
   const handlePayment = () => {
-    navigation.navigate("CheckBooking", { bookingId });
+    createPaymentUrlMutation.mutate({
+      booking_id: bookingId as string,
+      return_url: 1,
+    });
   };
 
   return (
