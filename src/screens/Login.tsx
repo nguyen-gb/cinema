@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { FC, useContext, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
@@ -25,6 +25,7 @@ const statusBarHeight = StatusBar?.currentHeight ?? 0;
 const screen = dimensions.height + statusBarHeight + 15;
 
 const LoginScreen: FC = () => {
+  const { isGoBack } = useRoute().params as any;
   const { setIsAuthenticated, setProfile } = useContext(AppContext);
   const navigation = useNavigation<any>();
   const [username, setUsername] = useState("");
@@ -60,7 +61,8 @@ const LoginScreen: FC = () => {
       onSuccess: (data) => {
         setIsAuthenticated(true);
         setProfile(data.data.data.user);
-        navigation.navigate("Home");
+        if (isGoBack) navigation.goBack();
+        else navigation.navigate("Home");
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {

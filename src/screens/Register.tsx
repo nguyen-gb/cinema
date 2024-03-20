@@ -171,7 +171,9 @@ const RegisterScreen: FC = () => {
               Do you already have an account?
               <Text
                 className="text-[#AE1F17] text-[16px] font-semibold"
-                onPress={() => navigation.navigate("Login")}
+                onPress={() =>
+                  navigation.navigate("Login", { isGoBack: false })
+                }
               >
                 {" "}
                 Login

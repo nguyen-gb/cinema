@@ -77,7 +77,7 @@ const CreateNewPasswordScreen: FC = () => {
     };
     forgotPassMutation.mutate(body, {
       onSuccess: () => {
-        navigation.navigate("Login");
+        navigation.navigate("Login", { isGoBack: false });
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {

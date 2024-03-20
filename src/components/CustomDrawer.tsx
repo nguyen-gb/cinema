@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import { ChevronRightIcon } from "react-native-heroicons/outline";
 import { useNavigation } from "@react-navigation/native";
+import { useMutation } from "@tanstack/react-query";
 
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { AppContext } from "contexts/app.context";
-import { useMutation } from "@tanstack/react-query";
 import authApi from "apis/auth.api";
 
 export default function CustomDrawer() {
@@ -15,14 +15,12 @@ export default function CustomDrawer() {
 
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
-    onSuccess: () => {
-      setIsAuthenticated(false);
-      setProfile(null);
-    },
   });
 
   const handleLogout = () => {
     logoutMutation.mutate();
+    setIsAuthenticated(false);
+    setProfile(null);
   };
 
   return (
@@ -72,7 +70,7 @@ export default function CustomDrawer() {
         ) : (
           <View className="flex-col px-4">
             <TouchableOpacity
-              onPress={() => navigation.navigate("Login")}
+              onPress={() => navigation.navigate("Login", { isGoBack: false })}
               className="flex-row items-center p-2"
             >
               <Text className="text-base font-semibold text-white min-w-[100px]">

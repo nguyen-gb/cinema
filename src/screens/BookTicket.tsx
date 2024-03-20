@@ -1,7 +1,8 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import classNames from "classnames";
 
 import showtimeApi from "apis/showtime.api";
 import { seatArray } from "constants/seat";
@@ -9,7 +10,7 @@ import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SeatType } from "types/seat.type";
 import { calculateTicketPrice, formatCurrency } from "utils/utils";
-import classNames from "classnames";
+import { AppContext } from "contexts/app.context";
 
 interface SeatProps {
   isReserved: boolean;
@@ -58,6 +59,7 @@ const Seat: React.FC<SeatProps> = ({
 
 const BookTicketScreen: React.FC = () => {
   const { showtimeId, cinema } = useRoute().params as any;
+  const { isAuthenticated } = useContext(AppContext);
   const navigation = useNavigation<any>();
   const [selectedSeats, setSelectedSeats] = useState<
     { seat_number: number; seat_type: number }[]
@@ -106,6 +108,10 @@ const BookTicketScreen: React.FC = () => {
     }) ?? [];
 
   const toggleSeat = (seat: { seat_number: number; seat_type: SeatType }) => {
+    if (!isAuthenticated) {
+      navigation.navigate("Login", { isGoBack: true });
+      return;
+    }
     const seatIndex = selectedSeats.findIndex(
       (s) => s.seat_number === seat.seat_number
     );

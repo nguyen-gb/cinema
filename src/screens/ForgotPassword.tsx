@@ -90,7 +90,7 @@ const ForgotPasswordScreen: FC = () => {
           </TouchableOpacity>
           <Text
             className="text-center text-[#6F767E] text-[14px] font-medium underline mb-[24px]"
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => navigation.navigate("Login", { isGoBack: false })}
           >
             Back to login
           </Text>
