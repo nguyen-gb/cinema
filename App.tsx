@@ -77,6 +77,7 @@ function App(): JSX.Element {
             screenOptions={{
               headerShown: false,
             }}
+            initialRouteName="Splash"
           >
             <Drawer.Screen name="Splash" component={SplashScreen} />
             <Drawer.Screen name="Login" component={LoginScreen} />
