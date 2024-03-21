@@ -18,7 +18,9 @@ export default function SplashScreen() {
       const initialContext = await getInitialAppContext();
       setIsAuthenticated(initialContext.isAuthenticated);
       setProfile(initialContext.profile);
-      navigation.navigate("Home");
+      setTimeout(() => {
+        navigation.navigate("Home");
+      }, 3000);
     };
     fetchData();
   }, []);
