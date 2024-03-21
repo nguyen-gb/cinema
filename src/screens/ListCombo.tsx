@@ -59,7 +59,6 @@ const ListComboScreen: React.FC = () => {
         };
       }),
     };
-    console.log(body);
     createBookingMutation.mutate(body);
   };
 
