@@ -1,5 +1,5 @@
 import { ConfirmPaymentRes } from "../types/payment.type";
-import { User } from "../types/user.type";
+import { Review, User } from "../types/user.type";
 import { SuccessResponse } from "../types/utils.type";
 import http from "../utils/http";
 
@@ -23,6 +23,9 @@ const userApi = {
     confirm_password: string;
   }) {
     return http.post(`auth/user/change-password`, body);
+  },
+  reviewMovie(body: Review) {
+    return http.post(`auth/review`, body);
   },
 };
 

@@ -1,5 +1,10 @@
+import { UserReview } from "types/user.type";
 import { Movie, MovieListConfig } from "../types/movie.type";
-import { SuccessResponse } from "../types/utils.type";
+import {
+  Params,
+  ReviewSuccessResponse,
+  SuccessResponse,
+} from "../types/utils.type";
 import http from "../utils/http";
 
 const URL = "unauth/movie";
@@ -15,6 +20,14 @@ const movieApi = {
   },
   getMostMovies() {
     return http.get<SuccessResponse<Movie[]>>(`${URL}/most-view`);
+  },
+  getMovieReview(id: string, params: Params) {
+    return http.get<ReviewSuccessResponse<UserReview[]>>(
+      `auth/review/${id}/movie`,
+      {
+        params: params,
+      }
+    );
   },
 };
 

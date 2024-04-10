@@ -22,6 +22,7 @@
     "expo-linear-gradient": "^12.7.2",
     "expo-status-bar": "~1.11.1",
     "lodash": "^4.17.21",
+    "moment": "^2.30.1",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-native": "0.73.6",

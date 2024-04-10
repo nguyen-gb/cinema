@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   ChevronLeftIcon,
@@ -7,24 +7,61 @@ import {
   StarIcon,
 } from "react-native-heroicons/outline";
 import { useQuery } from "@tanstack/react-query";
+import moment from "moment";
+import classNames from "classnames";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
 import { AppContext } from "contexts/app.context";
 import userApi from "apis/user.api";
 import { formatCurrency } from "utils/utils";
+import { ConfirmPaymentRes } from "types/payment.type";
 
 export default function PurchaseHistoryScreen() {
   const { profile } = useContext(AppContext);
   const navigation = useNavigation<any>();
+  const [viewed, setViewed] = useState<ConfirmPaymentRes[]>([]);
+  const [unViewed, setUnViewed] = useState<ConfirmPaymentRes[]>([]);
+  const [data, setData] = useState<ConfirmPaymentRes[]>([]);
+  const [isViewed, setIsViewed] = useState(false);
 
   const { data: hisBookingsData } = useQuery({
     queryKey: ["purchases", profile?._id],
     queryFn: () => userApi.getHistoryBooking(profile?._id as string),
+    staleTime: 1000,
   });
 
   const hisBookings = hisBookingsData?.data.data;
-  console.log(hisBookings);
+
+  const isPastTime = (time: string) => {
+    const currentTime = moment();
+    const targetTime = moment(time, "HH:mm DD:MM:YYYY");
+    if (currentTime.isAfter(targetTime)) return true;
+    else return false;
+  };
+
+  useEffect(() => {
+    hisBookings &&
+      setViewed(
+        hisBookings.filter((booking) =>
+          isPastTime(`${booking.showtime} ${booking.time}`)
+        )
+      );
+
+    hisBookings &&
+      setUnViewed(
+        hisBookings.filter(
+          (booking) => !isPastTime(`${booking.showtime} ${booking.time}`)
+        )
+      );
+
+    hisBookings &&
+      setData(
+        hisBookings.filter(
+          (booking) => !isPastTime(`${booking.showtime} ${booking.time}`)
+        )
+      );
+  }, [hisBookings]);
 
   return (
     <View className="flex-1 bg-white">
@@ -89,23 +126,94 @@ export default function PurchaseHistoryScreen() {
           <Text className="text-[20px] font-semibold mb-[12px]">
             Purchase history
           </Text>
+          <View className="flex-row justify-between items-center mb-[12px]">
+            <View className="flex-row items-center">
+              <Image
+                className="mr-1"
+                source={require("../assets/ticket_icon.png")}
+              />
+              <Text className="text-base font-medium">
+                Total ticket: {hisBookings?.length}
+              </Text>
+            </View>
+            <View className="flex-row items-center">
+              <Image
+                className="mr-1"
+                source={require("../assets/star_icon.png")}
+              />
+              <Text className="text-base font-medium">
+                Total points: {(hisBookingsData?.data as any)?.exchange_point}
+              </Text>
+            </View>
+          </View>
+          <View className="flex-row items-center gap-4 mb-[12px]">
+            <TouchableOpacity
+              className={classNames(
+                "px-[16px] py-[8px] bg-primary rounded-[8px]",
+                { "opacity-50": isViewed }
+              )}
+              onPress={() => {
+                setData(unViewed);
+                setIsViewed(false);
+              }}
+            >
+              <Text className="text-white text-base font-semibold">
+                Unviewed
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className={classNames(
+                "px-[16px] py-[8px] bg-primary rounded-[8px]",
+                { "opacity-50": !isViewed }
+              )}
+              onPress={() => {
+                setData(viewed);
+                setIsViewed(true);
+              }}
+            >
+              <Text className="text-white text-base font-semibold">Viewed</Text>
+            </TouchableOpacity>
+          </View>
           <ScrollView
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 15 }}
           >
             <View className="w-full flex-col justify-center items-center">
-              {hisBookings?.map((booking) => (
-                <View className="w-full flex-row items-center p-4 border-gray-500 border rounded-xl mb-2">
+              {data?.map((booking) => (
+                <View
+                  key={booking._id}
+                  className="w-full flex-row items-center p-4 border-gray-500 border rounded-xl mb-2"
+                >
                   {booking.payment_status === 1 ? (
-                    <Text className="text-[#38B000] text-2xl font-medium px-[25px]">
-                      Paid
-                    </Text>
+                    <View className="flex-col justify-center items-center gap-2 mr-2">
+                      <Text className="text-[#38B000] text-2xl font-medium px-[25px]">
+                        Paid
+                      </Text>
+                      {booking.reviewed === 0 &&
+                      Number(booking.payment_status) === 1 ? (
+                        <TouchableOpacity
+                          className="px-[16px] py-[8px] bg-[#EE9324] rounded-[8px]"
+                          onPress={() =>
+                            navigation.navigate("Review", { booking: booking })
+                          }
+                        >
+                          <Text className="text-white">Rate now</Text>
+                        </TouchableOpacity>
+                      ) : (
+                        <TouchableOpacity className="px-[16px] py-[8px] bg-[#EE9324] rounded-[8px]">
+                          <Text className="text-white">Reviewed</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
                   ) : (
                     <Text className="text-[#F87C7A] text-2xl font-medium px-[25px]">
                       Unpaid
                     </Text>
                   )}
                   <View className="flex-col">
+                    <Text className="text-base font-medium">
+                      #{booking.code}
+                    </Text>
                     <Text className="text-base font-medium">
                       {booking.movie_name.length > 50
                         ? booking.movie_name.slice(0, 50) + "..."
