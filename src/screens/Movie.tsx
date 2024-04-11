@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { ChevronLeftIcon } from "react-native-heroicons/outline";
+import { ArrowDownIcon, ChevronLeftIcon } from "react-native-heroicons/outline";
 import { useQuery } from "@tanstack/react-query";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -29,6 +29,10 @@ export default function MovieScreen() {
     queryKey: ["review", movie._id, pageSize],
     queryFn: () => movieApi.getMovieReview(movie._id, queryConfig),
   });
+
+  const handleViewMore = () => {
+    setPageSize((pre) => pre + 5);
+  };
 
   useEffect(() => {
     productReviewData && setTotalReview(productReviewData?.data.total_review);
@@ -186,6 +190,19 @@ export default function MovieScreen() {
                   <View className="h-[0.75px] bg-[#6f767ebf] my-4"></View>
                 </View>
               ))}
+            {totalRecord > pageSize && (
+              <View className="w-full flex-row justify-center">
+                <TouchableOpacity
+                  onPress={handleViewMore}
+                  className="p-2 border-[2px] border-primary rounded-[10px] flex-row items-center"
+                >
+                  <Text className="text-primary text-base font-semibold mr-2">
+                    View more
+                  </Text>
+                  <ArrowDownIcon size="22" strokeWidth={3} color="#AE1F17" />
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
       </ScrollView>
