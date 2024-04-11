@@ -23,6 +23,7 @@ const ListComboScreen: React.FC = () => {
     queryKey: ["combo"],
     queryFn: () => comboApi.getCombos(),
   });
+
   const combos =
     dataCombos?.data.data.filter((combo) => combo.type === ComboType.COMBO) ??
     [];

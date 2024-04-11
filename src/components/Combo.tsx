@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useState } from "react";
 
-import { TouchableOpacity, View, Text, TouchableHighlight } from "react-native";
+import { TouchableOpacity, View, Text } from "react-native";
 import { formatCurrency } from "../utils/utils";
 import { Combo as ComboType } from "../types/combo.type";
 import {
@@ -76,6 +76,7 @@ const ItemCombo = ({ item, setCombo }: PropsItemCombo) => {
       }
     });
   };
+
   return (
     <View className="flex-row w-full items-center px-4 py-2">
       <View className="flex-1">

@@ -151,7 +151,7 @@ export default function MovieScreen() {
             />
             <View className="flex-row items-center">
               <Text className="text-[18px] leading-[22px] font-bold">
-                {totalReview}
+                {totalReview == "NaN" ? "-" : totalReview}
               </Text>
               <Text className="leading-[22px] text-[#727272]">
                 /5 - {totalRecord} review(s)

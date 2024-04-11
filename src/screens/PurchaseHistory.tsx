@@ -187,7 +187,7 @@ export default function PurchaseHistoryScreen() {
                   {booking.payment_status === 1 ? (
                     <View className="flex-col justify-center items-center gap-2 mr-2">
                       <Text className="text-[#38B000] text-2xl font-medium px-[25px]">
-                        Paid
+                        Viewed
                       </Text>
                       {booking.reviewed === 0 &&
                       Number(booking.payment_status) === 1 ? (
@@ -206,8 +206,8 @@ export default function PurchaseHistoryScreen() {
                       )}
                     </View>
                   ) : (
-                    <Text className="text-[#F87C7A] text-2xl font-medium px-[25px]">
-                      Unpaid
+                    <Text className="text-[#F87C7A] text-2xl font-medium px-[15px]">
+                      Unviewed
                     </Text>
                   )}
                   <View className="flex-col">

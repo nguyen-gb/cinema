@@ -60,7 +60,7 @@ const PaymentScreen: React.FC = () => {
         <SafeAreaView className="z-20 w-full flex flex-row justify-start items-center px-4">
           <TouchableOpacity
             className="mr-2"
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate("Home")}
           >
             <ChevronLeftIcon size="28" strokeWidth={2.5} color="black" />
           </TouchableOpacity>
