@@ -26,7 +26,7 @@ export interface Time {
 }
 
 export interface MovieListConfig {
-  genre_id?: number;
+  genre_id?: string;
   status?: number;
   key_search?: string;
 }

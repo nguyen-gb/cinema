@@ -1,9 +1,10 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
 
+import { SelectList } from "react-native-dropdown-select-list";
 import movieApi from "apis/movie.api";
 import {
   View,
@@ -17,6 +18,7 @@ import {
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import Loading from "components/Loading";
+import { Genre } from "types/movie.type";
 
 const { width, height } = Dimensions.get("window");
 
@@ -38,21 +40,25 @@ export default function ListMovieScreen() {
     },
   });
 
-  const genres = dataGenres?.data.data;
+  const genres = dataGenres?.data.data ?? [];
 
   const { data: dataMovie, isLoading } = useQuery({
-    queryKey: [status],
+    queryKey: [status, genre],
     queryFn: () => {
-      return movieApi.getMovies({ status: status });
+      return movieApi.getMovies({ status: status, genre_id: genre });
     },
   });
   const movie = dataMovie?.data.data;
+
+  useEffect(() => {
+    setGenre("");
+  }, [status]);
 
   return (
     <SafeAreaView className="bg-white flex-1">
       <ExpoStatusBar style="dark" />
       <View className="w-full py-3">
-        <View className="z-20 w-full flex flex-row justify-start items-center px-4">
+        <View className="z-20 w-full flex flex-row justify-start items-center px-4 mb-4">
           <TouchableOpacity
             className="mr-2"
             onPress={() => navigation.navigate("Home")}
@@ -60,6 +66,22 @@ export default function ListMovieScreen() {
             <ChevronLeftIcon size="28" strokeWidth={2.5} color="black" />
           </TouchableOpacity>
           <Text className="text-xl font-semibold">{title}</Text>
+        </View>
+        <View className="px-4">
+          <SelectList
+            placeholder="Select genre"
+            setSelected={(val: string) => setGenre(val)}
+            data={[
+              { key: "", value: "All" },
+              ...genres?.map((genre) => {
+                return {
+                  key: genre._id,
+                  value: genre.name,
+                };
+              }),
+            ]}
+            search={false}
+          />
         </View>
       </View>
       {isLoading && <Loading />}
