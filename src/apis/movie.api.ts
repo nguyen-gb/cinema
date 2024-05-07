@@ -1,5 +1,5 @@
 import { UserReview } from "types/user.type";
-import { Movie, MovieListConfig } from "../types/movie.type";
+import { Genre, Movie, MovieListConfig } from "../types/movie.type";
 import {
   Params,
   ReviewSuccessResponse,
@@ -28,6 +28,9 @@ const movieApi = {
         params: params,
       }
     );
+  },
+  getGenres() {
+    return http.get<SuccessResponse<Genre[]>>(`unauth/genre`);
   },
 };
 

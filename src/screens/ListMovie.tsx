@@ -1,10 +1,10 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
-import movieApi from "apis/movie.api";
 import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
-import React from "react";
+import React, { useState } from "react";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
 
+import movieApi from "apis/movie.api";
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import Loading from "components/Loading";
 
@@ -26,17 +27,26 @@ interface Props {
 
 export default function ListMovieScreen() {
   const { title, status } = useRoute().params as Props;
+  const [genre, setGenre] = useState("");
 
   const navigation = useNavigation<any>();
 
-  const { data, isLoading } = useQuery({
+  const { data: dataGenres } = useQuery({
+    queryKey: [status],
+    queryFn: () => {
+      return movieApi.getGenres();
+    },
+  });
+
+  const genres = dataGenres?.data.data;
+
+  const { data: dataMovie, isLoading } = useQuery({
     queryKey: [status],
     queryFn: () => {
       return movieApi.getMovies({ status: status });
     },
-    staleTime: 3 * 60 * 1000,
   });
-  const movie = data?.data.data;
+  const movie = dataMovie?.data.data;
 
   return (
     <SafeAreaView className="bg-white flex-1">

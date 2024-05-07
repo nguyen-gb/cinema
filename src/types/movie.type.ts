@@ -30,3 +30,8 @@ export interface MovieListConfig {
   status?: number;
   key_search?: string;
 }
+
+export interface Genre {
+  _id: string;
+  name: string;
+}

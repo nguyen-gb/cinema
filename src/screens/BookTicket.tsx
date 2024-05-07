@@ -72,7 +72,7 @@ const BookTicketScreen: React.FC = () => {
   const totalSeats = rows * cols;
 
   const { data } = useQuery({
-    queryKey: ["showtimes", showtimeId],
+    queryKey: ["showtimes", showtimeId, now],
     queryFn: () => showtimeApi.getShowtimesById(showtimeId as string),
   });
 
