@@ -3,7 +3,6 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
-  ChevronUpIcon,
 } from "react-native-heroicons/outline";
 import { useQuery } from "@tanstack/react-query";
 import classNames from "classnames";
@@ -54,6 +53,7 @@ export default function ShowtimeScreen() {
     const data = {
       showtimeId: showtime_id,
       cinema: cinemas?.find((cinema) => cinema._id === cinemaId),
+      now: Date.now(),
     };
     navigation.navigate("BookTicket", data);
   };
@@ -62,7 +62,7 @@ export default function ShowtimeScreen() {
     if (cinemas) {
       setCinemaId(cinemas[0]._id);
     }
-  }, []);
+  }, [cinemas]);
 
   return (
     <View className="flex-1 bg-white">

@@ -23,7 +23,7 @@ const movieApi = {
   },
   getMovieReview(id: string, params: Params) {
     return http.get<ReviewSuccessResponse<UserReview[]>>(
-      `auth/review/${id}/movie`,
+      `unauth/review/${id}/movie`,
       {
         params: params,
       }

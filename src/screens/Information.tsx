@@ -137,7 +137,9 @@ export default function InformationScreen() {
                 <Text className="text-xs text-white">Change password</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.navigate("PurchaseHistory")}
+                onPress={() =>
+                  navigation.navigate("PurchaseHistory", { now: Date.now() })
+                }
                 className="w-[100px] flex-col items-center justify-between"
               >
                 <View className="w-[36px] h-[36px] rounded-full bg-green-300 flex justify-center items-center mb-2">

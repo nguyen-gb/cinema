@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   ChevronLeftIcon,
   InformationCircleIcon,
@@ -20,13 +20,14 @@ import { ConfirmPaymentRes } from "types/payment.type";
 export default function PurchaseHistoryScreen() {
   const { profile } = useContext(AppContext);
   const navigation = useNavigation<any>();
+  const { now } = useRoute().params as any;
   const [viewed, setViewed] = useState<ConfirmPaymentRes[]>([]);
   const [unViewed, setUnViewed] = useState<ConfirmPaymentRes[]>([]);
   const [data, setData] = useState<ConfirmPaymentRes[]>([]);
   const [isViewed, setIsViewed] = useState(false);
 
   const { data: hisBookingsData } = useQuery({
-    queryKey: ["purchases", profile?._id],
+    queryKey: ["purchases", profile?._id, now],
     queryFn: () => userApi.getHistoryBooking(profile?._id as string),
     staleTime: 1000,
   });
@@ -113,7 +114,9 @@ export default function PurchaseHistoryScreen() {
                 <Text className="text-xs text-white">Change password</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.navigate("PurchaseHistory")}
+                onPress={() =>
+                  navigation.navigate("PurchaseHistory", { now: Date.now() })
+                }
                 className="w-[100px] flex-col items-center justify-between"
               >
                 <View className="w-[36px] h-[36px] rounded-full bg-green-300 flex justify-center items-center mb-2">
@@ -185,19 +188,25 @@ export default function PurchaseHistoryScreen() {
                   className="w-full flex-row items-center p-4 border-gray-500 border rounded-xl mb-2"
                 >
                   {booking.payment_status === 1 ? (
-                    <View className="flex-col justify-center items-center gap-2 mr-2">
+                    <View className="flex-col justify-center items-center gap-2 mr-2 w-[170px]">
                       <Text className="text-[#38B000] text-2xl font-medium px-[25px]">
-                        Viewed
+                        {isViewed ? "Viewed" : "Unviewed"}
                       </Text>
+
                       {booking.reviewed === 0 &&
                       Number(booking.payment_status) === 1 ? (
                         <TouchableOpacity
                           className="px-[16px] py-[8px] bg-[#EE9324] rounded-[8px]"
                           onPress={() =>
-                            navigation.navigate("Review", { booking: booking })
+                            isViewed &&
+                            navigation.navigate("Review", {
+                              booking: booking,
+                            })
                           }
                         >
-                          <Text className="text-white">Rate now</Text>
+                          <Text className="text-white">
+                            {isViewed ? "Rate now" : "Paid"}
+                          </Text>
                         </TouchableOpacity>
                       ) : (
                         <TouchableOpacity className="px-[16px] py-[8px] bg-[#EE9324] rounded-[8px]">
@@ -206,8 +215,8 @@ export default function PurchaseHistoryScreen() {
                       )}
                     </View>
                   ) : (
-                    <Text className="text-[#F87C7A] text-2xl font-medium px-[15px]">
-                      Unviewed
+                    <Text className="text-[#F87C7A] text-2xl text-center font-medium px-[15px] w-[170px]">
+                      Unpaid
                     </Text>
                   )}
                   <View className="flex-col">
@@ -215,14 +224,14 @@ export default function PurchaseHistoryScreen() {
                       #{booking.code}
                     </Text>
                     <Text className="text-base font-medium">
-                      {booking.movie_name.length > 50
-                        ? booking.movie_name.slice(0, 50) + "..."
+                      {booking.movie_name.length > 16
+                        ? booking.movie_name.slice(0, 16) + "..."
                         : booking.movie_name}
                     </Text>
                     <Text className="text-sm text-[#646464]">
                       Cinema:{" "}
-                      {booking.theater_name.length > 40
-                        ? booking.theater_name.slice(0, 40) + "..."
+                      {booking.theater_name.length > 10
+                        ? booking.theater_name.slice(0, 10) + "..."
                         : booking.theater_name}
                     </Text>
                     <Text className="text-sm text-[#646464]">

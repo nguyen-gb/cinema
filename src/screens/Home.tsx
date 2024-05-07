@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   Bars3CenterLeftIcon,
   MagnifyingGlassIcon,
@@ -8,11 +8,9 @@ import { useNavigation } from "@react-navigation/native";
 
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import {
-  BackHandler,
   Image,
   Platform,
   ScrollView,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -28,9 +26,6 @@ const HomeScreen: FC = () => {
   const [trending, setTrending] = useState<Movie[]>([]);
   const [showing, setShowing] = useState<Movie[]>([]);
   const [upcoming, setUpcoming] = useState<Movie[]>([]);
-
-  const backPressedCount = useRef(0);
-  const lastBackPressed = useRef(0);
 
   const { data: dataTrending, isLoading: isLoadingTrending } = useQuery({
     queryKey: ["most"],
@@ -51,7 +46,6 @@ const HomeScreen: FC = () => {
     queryFn: () => {
       return movieApi.getMovies({ status: 2 });
     },
-    staleTime: 3 * 60 * 1000,
   });
 
   const navigateToListShowing = () => {
@@ -71,30 +65,6 @@ const HomeScreen: FC = () => {
   useEffect(() => {
     setUpcoming(dataUpcoming?.data.data as Movie[]);
   }, [dataUpcoming]);
-
-  useEffect(() => {
-    const backAction = () => {
-      const currentTime = new Date().getTime();
-      if (currentTime - lastBackPressed.current < 3000) {
-        BackHandler.exitApp();
-        return true;
-      } else {
-        lastBackPressed.current = currentTime;
-        backPressedCount.current++;
-        ToastAndroid.show("Touch again to exit.", ToastAndroid.SHORT);
-        setTimeout(() => {
-          backPressedCount.current = 0;
-        }, 3000);
-        return true;
-      }
-    };
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, []);
 
   return (
     <View className="flex-1 bg-white">

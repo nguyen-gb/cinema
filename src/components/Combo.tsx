@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { TouchableOpacity, View, Text } from "react-native";
 import { formatCurrency } from "../utils/utils";

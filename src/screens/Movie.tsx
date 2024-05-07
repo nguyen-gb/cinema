@@ -24,9 +24,10 @@ export default function MovieScreen() {
   };
 
   const movie = (params as any).movie as Movie;
+  const now = (params as any).now;
 
   const { data: productReviewData } = useQuery({
-    queryKey: ["review", movie._id, pageSize],
+    queryKey: ["review", movie._id, pageSize, now],
     queryFn: () => movieApi.getMovieReview(movie._id, queryConfig),
   });
 

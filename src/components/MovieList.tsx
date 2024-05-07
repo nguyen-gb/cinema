@@ -48,7 +48,12 @@ export default function MovieList(props: Props) {
             return (
               <TouchableWithoutFeedback
                 key={movie._id}
-                onPress={() => navigation.navigate("Movie", { movie: movie })}
+                onPress={() =>
+                  navigation.navigate("Movie", {
+                    movie: movie,
+                    now: Date.now(),
+                  })
+                }
               >
                 <View className="space-y-1 mr-4">
                   <Image

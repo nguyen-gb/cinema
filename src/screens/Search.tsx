@@ -71,7 +71,12 @@ export default function SearchScreen() {
               return (
                 <TouchableWithoutFeedback
                   key={item._id}
-                  onPress={() => navigation.navigate("Movie", { movie: item })}
+                  onPress={() =>
+                    navigation.navigate("Movie", {
+                      movie: item,
+                      now: Date.now(),
+                    })
+                  }
                 >
                   <View className="space-y-2 mb-5">
                     <Image

@@ -18,7 +18,7 @@ export default function TrendingMovies(props: Props) {
   const { data, isLoading } = props;
 
   const handleClick = (item: Movie) => {
-    navigation.navigate("Movie", { movie: item });
+    navigation.navigate("Movie", { movie: item, now: Date.now() });
   };
   return (
     <View className="mb-8">

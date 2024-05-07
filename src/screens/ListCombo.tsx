@@ -14,25 +14,19 @@ import { Combo as ComboInterface, ComboType } from "../types/combo.type";
 import Combo from "components/Combo";
 
 const ListComboScreen: React.FC = () => {
-  const { dataBookTicket } = useRoute().params as any;
+  const { dataBookTicket, now } = useRoute().params as any;
   const navigation = useNavigation<any>();
   const [combo, setCombo] = useState<ComboInterface[]>([]);
   const [totalCombo, setTotalCombo] = useState(0);
+
+  const [combos, setCombos] = useState<ComboInterface[]>([]);
+  const [drinks, setDrinks] = useState<ComboInterface[]>([]);
+  const [popcorns, setPopcorns] = useState<ComboInterface[]>([]);
 
   const { data: dataCombos } = useQuery({
     queryKey: ["combo"],
     queryFn: () => comboApi.getCombos(),
   });
-
-  const combos =
-    dataCombos?.data.data.filter((combo) => combo.type === ComboType.COMBO) ??
-    [];
-  const drinks =
-    dataCombos?.data.data.filter((combo) => combo.type === ComboType.DRINK) ??
-    [];
-  const popcorns =
-    dataCombos?.data.data.filter((combo) => combo.type === ComboType.POPCORN) ??
-    [];
 
   const createBookingMutation = useMutation({
     mutationFn: (body: Booking) => bookingApi.createBooking(body),
@@ -71,13 +65,36 @@ const ListComboScreen: React.FC = () => {
     setTotalCombo(newTotalPrice);
   }, [combo]);
 
+  useEffect(() => {
+    setCombo([]);
+    setTotalCombo(0);
+
+    if (dataCombos && dataCombos.data && dataCombos.data.data) {
+      const { data } = dataCombos.data;
+      setCombos(data.filter((combo) => combo.type === ComboType.COMBO));
+      setDrinks(data.filter((combo) => combo.type === ComboType.DRINK));
+      setPopcorns(data.filter((combo) => combo.type === ComboType.POPCORN));
+    } else {
+      setCombos([]);
+      setDrinks([]);
+      setPopcorns([]);
+    }
+  }, [dataCombos, now]);
+
   return (
     <View className="flex-1 bg-white">
       <View className="w-full py-3">
         <SafeAreaView className="z-20 w-full flex flex-row justify-start items-center px-4">
           <TouchableOpacity
             className="mr-2"
-            onPress={() => navigation.goBack()}
+            onPress={() => {
+              setCombo([]);
+              setCombos([]);
+              setDrinks([]);
+              setPopcorns([]);
+              setTotalCombo(0);
+              navigation.goBack();
+            }}
           >
             <ChevronLeftIcon size="28" strokeWidth={2.5} color="black" />
           </TouchableOpacity>

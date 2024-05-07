@@ -1,7 +1,7 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import classNames from "classnames";
 
 import showtimeApi from "apis/showtime.api";
@@ -58,7 +58,7 @@ const Seat: React.FC<SeatProps> = ({
 };
 
 const BookTicketScreen: React.FC = () => {
-  const { showtimeId, cinema } = useRoute().params as any;
+  const { showtimeId, cinema, now } = useRoute().params as any;
   const { isAuthenticated } = useContext(AppContext);
   const navigation = useNavigation<any>();
   const [selectedSeats, setSelectedSeats] = useState<
@@ -95,6 +95,7 @@ const BookTicketScreen: React.FC = () => {
       };
       navigation.navigate("ListCombo", {
         dataBookTicket,
+        now: Date.now(),
       });
     }
   };
@@ -131,13 +132,24 @@ const BookTicketScreen: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    setSelectedSeats([]);
+    setTotal(0);
+    setIsActive(false);
+  }, [now]);
+
   return (
     <View className="flex-1 bg-white">
       <View className="w-full py-3">
         <SafeAreaView className="z-20 w-full flex flex-row justify-start items-center px-4">
           <TouchableOpacity
             className="mr-2"
-            onPress={() => navigation.goBack()}
+            onPress={() => {
+              setSelectedSeats([]);
+              setTotal(0);
+              setIsActive(false);
+              navigation.goBack();
+            }}
           >
             <ChevronLeftIcon size="28" strokeWidth={2.5} color="black" />
           </TouchableOpacity>
