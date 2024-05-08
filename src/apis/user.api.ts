@@ -25,7 +25,7 @@ const userApi = {
     return http.post(`auth/user/change-password`, body);
   },
   reviewMovie(body: Review) {
-    return http.post(`auth/review`, body);
+    return http.post(`unauth/review`, body);
   },
 };
 

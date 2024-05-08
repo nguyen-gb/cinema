@@ -39,7 +39,7 @@ export default function ReviewScreen() {
       onSuccess: () => {
         setRating(1);
         setReview("");
-        navigation.goBack();
+        navigation.navigate("PurchaseHistory", { now: Date.now() });
       },
     });
   };
