@@ -61,8 +61,11 @@ const LoginScreen: FC = () => {
       onSuccess: (data) => {
         setIsAuthenticated(true);
         setProfile(data.data.data.user);
-        if (isGoBack) navigation.goBack();
-        else navigation.navigate("Home");
+        if (isGoBack) {
+          navigation.goBack();
+        } else {
+          navigation.navigate("Home");
+        }
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
