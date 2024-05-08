@@ -64,6 +64,10 @@ export default function PurchaseHistoryScreen() {
       );
   }, [hisBookings]);
 
+  useEffect(() => {
+    setIsViewed(false);
+  }, [now]);
+
   return (
     <View className="flex-1 bg-white">
       <View className="w-full py-3">
