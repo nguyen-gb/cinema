@@ -83,10 +83,11 @@ export class Http {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const data: any | undefined = error.response?.data;
           const message = data?.message || error.message;
-          Toast.show({
-            type: "error",
-            text1: message,
-          });
+          if (message != "The user don't have any booking yet!")
+            Toast.show({
+              type: "error",
+              text1: message,
+            });
         }
         //Nếu là lỗi 401
         if (
